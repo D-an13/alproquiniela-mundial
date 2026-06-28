@@ -74,12 +74,12 @@
         .app-container {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center;      
             min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
             position: relative;
-            z-index: 5; /* Por encima del confeti */
+            z-index: 5; 
         }
 
         /* Tarjeta Quiniela: Diseño Horizontal para PC, adaptable a Móvil */
@@ -273,8 +273,10 @@
         .tarjeta-quiniela div style span {
             font-size: 1.75rem !important; 
             font-weight: 900;
-            display: inline-block;        
-            margin-bottom: 25px;          
+            display: flex !important;       
+            align-items: center;            
+            gap: 16px;                      
+            margin-bottom: 20px;
         }
 
         #txtEstadoPartido {
@@ -285,58 +287,70 @@
 
        @media (max-width: 768px) {
             .app-container {
-                padding: 8px;             /* Menos margen exterior para ganar espacio */
+                padding: 12px;
+                min-height: 100vh;            
             }
             
             .tarjeta-quiniela {
-                padding: 15px;            /* Tarjeta blanca más compacta */
+                padding: 16px;            
                 border-radius: 20px;
             }
 
             .quiniela-grid {
-                grid-template-columns: 1fr; /* Una sola columna en celular */
-                gap: 12px;                /* Reducimos separación de bloques de 20px a 12px */
+                grid-template-columns: 1fr; 
+                gap: 8px;                 /* Pegamos sutilmente el bloque de arriba con el de abajo */
             }
 
             .col-controles {
-                gap: 8px;                 /* Pasos 1, 2 y 3 más pegaditos entre sí */
+                gap: 6px;                 /* Compactamos los espacios vacíos entre los pasos 1, 2 y 3 */
             }
 
-            /* Reducimos los márgenes de los labels de los pasos */
+            /* Reducimos solo el margen inferior de las etiquetas para ganar altura */
             .label-premium {
-                margin-bottom: 4px;
-                font-size: 0.7rem;
+                margin-bottom: 2px;
             }
 
-            /* Selectores un cacho más delgados */
             .select-premium {
-                padding: 10px 14px;
+                padding: 12px 16px;       /* Selectores cómodos y fáciles de tocar */
             }
 
-            /* El botón de guardar un pelín más compacto */
+            /* 🔥 BOTÓN GRANDE Y PREMIUM: Recupera su tamaño original e imponente */
             .btn-guardar {
-                padding: 12px;
-                font-size: 0.95rem;
+                padding: 16px;            
+                font-size: 1.05rem;
+                margin-top: 4px;          /* Separación limpia */
             }
 
             .col-marcador {
-                padding: 12px;            /* Pronóstico oficial más compacto */
-                min-height: auto;         /* Que no fuerce altura innecesaria */
+                padding: 14px;            /* Contenedor del pronóstico optimizado */
+                min-height: auto;         
             }
             
-            /* Ajuste de fuentes adaptables para que no tape la pantalla del cel */
+           /* 👑 TÍTULO EN CELULAR: Tamaños de antes, pero con separación real */
             .tarjeta-quiniela span[style*="font-size: 1.4rem"] {
-                font-size: 1.35rem !important; 
-                margin-bottom: 15px;       /* Respiro adaptado a móvil */
+                font-size: 1.4rem !important; 
+                display: flex !important;   
+                align-items: center;        
+                gap: 14px;                  
+                margin-bottom: 12px;        
             }
+
+            /* 🏆 Separación extra entre el emoji del Trofeo y el texto del Título */
+            .tarjeta-quiniela span[style*="font-size: 1.4rem"] text,
+            .tarjeta-quiniela span[style*="font-size: 1.4rem"]::before {
+                margin-right: 12px;        /* Evita que el trofeo y la Q se peguen horizontalmente */
+            }
+
             #txtEstadoPartido {
-                font-size: 0.9rem !important;
+                font-size: 1.05rem !important; /* "PRONÓSTICO OFICIAL" claro y legible */
             }
+
+            /* Los inputs de los goles se quedan grandes y oscuros */
             .input-goles {
-                width: 70px;
-                font-size: 1.4rem;
-                padding: 8px 0;
-                margin-top: 6px;
+                width: 80px;
+                font-size: 1.7rem;
+                padding: 10px 0;
+                margin-top: 8px;
             }
         }
 
@@ -488,7 +502,7 @@
                         </div>
 
                         <div style="margin-bottom: 16px;">
-                            <label class="label-premium">2. Selecciona la Fecha / Fase:</label>
+                            <label class="label-premium">2. Selecciona la Fase:</label>
                             <select id="selectFase" onchange="cargarPartidosPorFase()" class="select-premium">
     <option value="Dieciseisavos">🔥 Dieciseisavos de Final</option>
     <option value="Octavos" disabled>⚽ Octavos de Final (Próximamente)</option>
@@ -578,7 +592,7 @@
             { id: "P79", fase: "Dieciseisavos", desc: "Mar 30/06 - 11:00 AM - P79: Costa de Marfil v Noruega", loc: "Costa de Marfil", flLoc: "🇨🇮", vis: "Noruega", flVis: "🇳🇴", bloqueo: new Date("2026-06-30T11:00:00-06:00") },
             { id: "P80", fase: "Dieciseisavos", desc: "Mar 30/06 - 3:00 PM - P80: Francia v Suecia", loc: "Francia", flLoc: "🇫🇷", vis: "Suecia", flVis: "🇸🇪", bloqueo: new Date("2026-06-30T15:00:00-06:00") },
             { id: "P81", fase: "Dieciseisavos", desc: "Mar 30/06 - 7:00 PM - P81: México v Ecuador", loc: "México", flLoc: "🇲🇽", vis: "Ecuador", flVis: "🇪🇨", bloqueo: new Date("2026-06-30T19:00:00-06:00") },
-            { id: "P82", fase: "Dieciseisavos", desc: "Mié 01/07 - 10:00 AM - P82: Inglaterra v Por Definir", loc: "Inglaterra", flLoc: "🇬🇧", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-01T10:00:00-06:00") },
+            { id: "P82", fase: "Dieciseisavos", desc: "Mié 01/07 - 10:00 AM - P82: Inglaterra v Por Definir", loc: "Inglaterra", flLoc: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-01T10:00:00-06:00") },
             { id: "P83", fase: "Dieciseisavos", desc: "Mié 01/07 - 2:00 PM - P83: Bélgica v Por Definir", loc: "Bélgica", flLoc: "🇧🇪", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-01T14:00:00-06:00") },
             { id: "P84", fase: "Dieciseisavos", desc: "Mié 01/07 - 6:00 PM - P84: Estados Unidos v Bosnia y Her.", loc: "Estados Unidos", flLoc: "🇺🇸", vis: "Bosnia y Her.", flVis: "🇧🇦", bloqueo: new Date("2026-07-01T18:00:00-06:00") },
             { id: "P85", fase: "Dieciseisavos", desc: "Jue 02/07 - 1:00 PM - P85: España v Por Definir", loc: "España", flLoc: "🇪🇸", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-02T13:00:00-06:00") },
