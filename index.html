@@ -803,20 +803,25 @@ function verificarBloqueoPartido() {
     // CASO 4: El partido está libre, evaluamos si ingresó los goles
     if (capaBloqueo) capaBloqueo.style.display = "none";
     
-    const gLocal = inputGolesLocal ? inputGolesLocal.value.trim() : "";
-    const gVisitante = inputGolesVisitante ? inputGolesVisitante.value.trim() : "";
+    // ✅ CORREGIDO: Evaluamos el valor directo sin forzar .trim() en inputs numéricos
+    const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
+    const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
+    
+    // Validamos que no estén vacíos (el número 0 es un valor válido en el fútbol)
     const tieneGoles = gLocal !== "" && gVisitante !== "";
 
     if (!tieneGoles) {
         btnGuardar.disabled = true;
         btnGuardar.classList.add("estado-pendiente"); 
+        btnGuardar.style.background = "#d97706"; // Color naranja de advertencia
         btnGuardar.innerText = "✍️ Completa los goles para guardar";
     } else {
         btnGuardar.disabled = false;
+        btnGuardar.classList.remove("estado-pendiente");
+        btnGuardar.style.background = "#16a34a"; // Color verde nítido para guardar
         btnGuardar.style.cursor = "pointer"; 
         btnGuardar.innerText = "⚽ Guardar mi Predicción";
     }
-}
 
         // ==========================================================================
         // ENVÍO DE DATOS NETO (YA SIN EL ALERT FEO)
