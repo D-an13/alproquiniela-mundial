@@ -11,12 +11,12 @@
         /* ==========================================================================
            1. FONDO MUNDIALISTA SUTIL Y EFECTO CONFETI OPTIMIZADO
            ========================================================================== */
-        html, body {
+       html, body {
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
-            overflow-x: hidden;
+            height: 100vh;          
+            overflow: hidden;       
             position: relative;
             
             /* 🏟️ Césped de Estadio Sutil: Colores oscuros y elegantes, nada de "chinto" */
@@ -271,8 +271,10 @@
         /* PC - Tamaños Grandes */
         .tarjeta-quiniela span[style*="font-size: 1.4rem"], 
         .tarjeta-quiniela div style span {
-            font-size: 1.75rem !important; /* Agrandamos el título principal Quiniela Mundial 2026 */
+            font-size: 1.75rem !important; 
             font-weight: 900;
+            display: inline-block;        
+            margin-bottom: 25px;          
         }
 
         #txtEstadoPartido {
@@ -281,37 +283,60 @@
             letter-spacing: 0.5px;
         }
 
-        @media (max-width: 768px) {
+       @media (max-width: 768px) {
             .app-container {
-                padding: 12px;
+                padding: 8px;             /* Menos margen exterior para ganar espacio */
             }
             
             .tarjeta-quiniela {
-                padding: 20px;
+                padding: 15px;            /* Tarjeta blanca más compacta */
                 border-radius: 20px;
             }
 
             .quiniela-grid {
                 grid-template-columns: 1fr; /* Una sola columna en celular */
-                gap: 20px;
+                gap: 12px;                /* Reducimos separación de bloques de 20px a 12px */
+            }
+
+            .col-controles {
+                gap: 8px;                 /* Pasos 1, 2 y 3 más pegaditos entre sí */
+            }
+
+            /* Reducimos los márgenes de los labels de los pasos */
+            .label-premium {
+                margin-bottom: 4px;
+                font-size: 0.7rem;
+            }
+
+            /* Selectores un cacho más delgados */
+            .select-premium {
+                padding: 10px 14px;
+            }
+
+            /* El botón de guardar un pelín más compacto */
+            .btn-guardar {
+                padding: 12px;
+                font-size: 0.95rem;
             }
 
             .col-marcador {
-                padding: 20px;
-                min-height: 200px;
+                padding: 12px;            /* Pronóstico oficial más compacto */
+                min-height: auto;         /* Que no fuerce altura innecesaria */
             }
             
             /* Ajuste de fuentes adaptables para que no tape la pantalla del cel */
             .tarjeta-quiniela span[style*="font-size: 1.4rem"] {
-                font-size: 1.4rem !important; 
+                font-size: 1.35rem !important; 
+                margin-bottom: 15px;       /* Respiro adaptado a móvil */
             }
             #txtEstadoPartido {
-                font-size: 0.95rem !important;
+                font-size: 0.9rem !important;
             }
             .input-goles {
-                width: 75px;
-                font-size: 1.5rem;
-                padding: 10px 0;
+                width: 70px;
+                font-size: 1.4rem;
+                padding: 8px 0;
+                margin-top: 6px;
             }
         }
 
