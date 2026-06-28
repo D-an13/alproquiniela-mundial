@@ -576,11 +576,11 @@
        2. LOGICA MOTOR DE JUEGO JAVASCRIPT
        ========================================================================== -->
     <script>
-       const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyyi9TtVH4EKKBDzRXPD0iHR0fBlnP59EtSEHrtY4jMkRz0z9nLVZlWIcIyD3UBlcf5/exec";
+        const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyyi9TtVH4EKKBDzRXPD0iHR0fBlnP59EtSEHrtY4jMkRz0z9nLVZlWIcIyD3UBlcf5/exec";
         let HISTORIAL_GENERAL_SHEETS = [];
         let panelRankingAbierto = false;
 
-     // Base de Datos Estructurada de Partidos (Fases Limpias)
+        // Base de Datos Estructurada de Partidos (Fases Limpias)
         const LISTA_PARTIDOS = [
             // --- DIECISEISAVOS DE FINAL ---
             { id: "P73", fase: "Dieciseisavos", desc: "Dom 28/06 - 10:00 AM - P73: Jordania v Argentina", loc: "Jordania", flLoc: "🇯🇴", vis: "Argentina", flVis: "🇦🇷", bloqueo: new Date("2026-06-28T10:00:00-06:00") },
@@ -603,28 +603,27 @@
             { id: "P90", fase: "Dieciseisavos", desc: "Vie 03/07 - 7:30 PM - P90: Por Definir v Ghana", loc: "Por Definir", flLoc: "🏳️", vis: "Ghana", flVis: "🇬🇭", bloqueo: new Date("2026-07-03T19:30:00-06:00") },
 
             // --- OCTAVOS DE FINAL ---
-{ id: "FUT_OCT", fase: "Octavos", desc: "Próximamente - Cruces de Octavos de Final", loc: "Por Definir", flLoc: "⏳", vis: "Por Definir", flVis: "⏳", bloqueo: new Date("2026-07-04T12:00:00-06:00") },
+            { id: "FUT_OCT", fase: "Octavos", desc: "Próximamente - Cruces de Octavos de Final", loc: "Por Definir", flLoc: "⏳", vis: "Por Definir", flVis: "⏳", bloqueo: new Date("2026-07-04T12:00:00-06:00") },
 
-// --- CUARTOS DE FINAL ---
-{ id: "FUT_CUARTOS", fase: "Cuartos", desc: "Próximamente - Cruces de Cuartos de Final", loc: "Por Definir", flLoc: "🧱", vis: "Por Definir", flVis: "🧱", bloqueo: new Date("2026-07-11T15:00:00-06:00") },
+            // --- CUARTOS DE FINAL ---
+            { id: "FUT_CUARTOS", fase: "Cuartos", desc: "Próximamente - Cruces de Cuartos de Final", loc: "Por Definir", flLoc: "🧱", vis: "Por Definir", flVis: "🧱", bloqueo: new Date("2026-07-11T15:00:00-06:00") },
 
-// --- SEMIFINALES Y GRAN FINAL ---
-{ id: "FUT_SEMIS", fase: "Semis y Final", desc: "Próximamente - Semifinales del Mundial", loc: "Por Definir", flLoc: "🏆", vis: "Por Definir", flVis: "🏆", bloqueo: new Date("2026-07-15T18:00:00-06:00") },
-{ id: "FUT_FINAL", fase: "Semis y Final", desc: "Dom 19/07 - 3:00 PM - Gran Final Mundial 2026", loc: "Finalista A", flLoc: "🏆", vis: "Finalista B", flVis: "🏆", bloqueo: new Date("2026-07-19T15:00:00-06:00") }
+            // --- SEMIFINALES Y GRAN FINAL ---
+            { id: "FUT_SEMIS", fase: "Semis y Final", desc: "Próximamente - Semifinales del Mundial", loc: "Por Definir", flLoc: "🏆", vis: "Por Definir", flVis: "🏆", bloqueo: new Date("2026-07-15T18:00:00-06:00") },
+            { id: "FUT_FINAL", fase: "Semis y Final", desc: "Dom 19/07 - 3:00 PM - Gran Final Mundial 2026", loc: "Finalista A", flLoc: "🏆", vis: "Finalista B", flVis: "🏆", bloqueo: new Date("2026-07-19T15:00:00-06:00") }
         ];
 
         function obtenerBanderaReal(emojiOriginal, nombreEquipo) {
             return emojiOriginal === "🇬🇧" ? "⚽" : emojiOriginal;
         }
 
-       function cargarPartidosPorFase() {
+        function cargarPartidosPorFase() {
             const faseSeleccionada = document.getElementById('selectFase').value;
             const selectPartido = document.getElementById('selectPartido');
             if (!selectPartido) return; 
             
             const partidosFiltrados = LISTA_PARTIDOS.filter(p => p.fase === faseSeleccionada);
             
-            // Diccionario de colores (mantenemos los de Dieciseisavos)
             const coloresDias = {
                 "28/06": "#ffffff",
                 "29/06": "#e0f2fe",
@@ -641,8 +640,6 @@
                     
                     const coincidenciaFecha = descLimpia.match(/\d{2}\/\d{2}/);
                     const fechaClave = coincidenciaFecha ? coincidenciaFecha[0] : "";
-                    
-                    // Si es una fase futura (Octavos, Cuartos, etc.), usará un gris pastel suave
                     const colorFondo = coloresDias[fechaClave] || "#f1f5f9"; 
                     
                     return `<option value="${p.id}" style="background-color: ${colorFondo}; color: #1e293b; padding: 6px;">${descLimpia}</option>`;
@@ -654,238 +651,226 @@
             cambiarPartidoSeleccionado();
         }
 
-      function cambiarPartidoSeleccionado() {
-    const selectPartido = document.getElementById('selectPartido');
-    if (!selectPartido) return;
+        function cambiarPartidoSeleccionado() {
+            const selectPartido = document.getElementById('selectPartido');
+            if (!selectPartido) return;
 
-    const idSel = selectPartido.value;
-    if (!idSel) return;
-    
-    const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
-    if (!partido) return;
+            const idSel = selectPartido.value;
+            if (!idSel) return;
+            
+            const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
+            if (!partido) return;
 
-    const lblLocal = document.getElementById('lblLocal');
-    const flagLocal = document.getElementById('flagLocal');
-    const lblVisitante = document.getElementById('lblVisitante');
-    const flagVisitante = document.getElementById('flagVisitante');
+            const lblLocal = document.getElementById('lblLocal');
+            const flagLocal = document.getElementById('flagLocal');
+            const lblVisitante = document.getElementById('lblVisitante');
+            const flagVisitante = document.getElementById('flagVisitante');
 
-    if (lblLocal) lblLocal.innerText = partido.loc;
-    if (flagLocal) flagLocal.innerText = obtenerBanderaReal(partido.flLoc, partido.loc); 
-    if (lblVisitante) lblVisitante.innerText = partido.vis;
-    if (flagVisitante) flagVisitante.innerText = obtenerBanderaReal(partido.flVis, partido.vis); 
+            if (lblLocal) lblLocal.innerText = partido.loc;
+            if (flagLocal) flagLocal.innerText = obtenerBanderaReal(partido.flLoc, partido.loc); 
+            if (lblVisitante) lblVisitante.innerText = partido.vis;
+            if (flagVisitante) flagVisitante.innerText = obtenerBanderaReal(partido.flVis, partido.vis); 
 
-    // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
-    // Buscamos los inputs usando el mismo método seguro en todo tu script
-    const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
-    const inputGolesVisita = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
-    
-    // Buscamos o creamos un contenedor para el mensaje bonito
-    let msgEspera = document.getElementById('msgFaseEspera');
-    
-    if (idSel.startsWith("FUT_")) {
-        // Ocultamos los inputs de goles para que no intenten escribir nada
-        if (inputGolesLocal) inputGolesLocal.style.display = 'none';
-        if (inputGolesVisita) inputGolesVisita.style.display = 'none';
-        
-        // Si no existe el mensaje en la pantalla, lo creamos dinámicamente justo en la tarjeta
-        if (!msgEspera) {
-            msgEspera = document.createElement('div');
-            msgEspera.id = 'msgFaseEspera';
-            msgEspera.className = "text-center py-3 px-4 bg-gray-50 rounded-lg border border-dashed border-gray-300 my-2";
-            msgEspera.innerHTML = `
-                <span class="text-sm font-semibold text-slate-500 block">⏳ Fase en espera</span>
-                <span class="text-xs text-slate-400 block mt-0.5">Falta por definir a los equipos clasificados</span>
-            `;
-            // Lo metemos justo en medio de la tarjeta
-            const contenedorPronostico = lblLocal.closest('.flex') || lblLocal.parentElement;
-            if (contenedorPronostico) {
-                contenedorPronostico.appendChild(msgEspera);
+            // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
+            const inputGolesLocal = document.getElementById('golesLocal');
+            const inputGolesVisita = document.getElementById('golesVisitante');
+            let msgEspera = document.getElementById('msgFaseEspera');
+
+            if (idSel.startsWith("FUT_")) {
+                if (inputGolesLocal) inputGolesLocal.style.display = 'none';
+                if (inputGolesVisita) inputGolesVisita.style.display = 'none';
+                
+                if (!msgEspera) {
+                    msgEspera = document.createElement('div');
+                    msgEspera.id = 'msgFaseEspera';
+                    msgEspera.className = "text-center py-3 px-4 bg-gray-50 rounded-lg border border-dashed border-gray-300 my-2";
+                    msgEspera.innerHTML = `
+                        <span class="text-sm font-semibold text-slate-500 block">⏳ Fase en espera</span>
+                        <span class="text-xs text-slate-400 block mt-0.5">Falta por definir a los equipos clasificados</span>
+                    `;
+                    const contenedorPronostico = lblLocal.closest('.flex') || lblLocal.parentElement;
+                    if (contenedorPronostico) {
+                        contenedorPronostico.appendChild(msgEspera);
+                    }
+                } else {
+                    msgEspera.style.display = 'block';
+                }
+            } else {
+                // ✅ Restauración perfecta de estilos nativos de CSS sin romper la alineación
+                if (inputGolesLocal) inputGolesLocal.style.display = '';
+                if (inputGolesVisita) inputGolesVisita.style.display = '';
+                if (msgEspera) msgEspera.style.display = 'none';
             }
-        } else {
-            msgEspera.style.display = 'block';
-        }
-    } else {
-        // ✅ CORREGIDO: Se quitó el doble .style
-        if (inputGolesLocal) inputGolesLocal.style.display = 'block';
-        if (inputGolesVisita) inputGolesVisita.style.display = 'block';
-        
-        // Ocultamos el mensaje de espera
-        if (msgEspera) msgEspera.style.display = 'none';
-    }
 
-    verificarBloqueoPartido();
-}
+            verificarBloqueoPartido();
+        } // ✅ AQUÍ SE HABÍA QUEDADO ABIERTO. YA SE CERRÓ LA FUNCIÓN CORRECTAMENTE.
 
-function actualizarHistorialDesdeSheets() {
-    if (!URL_SCRIPT) return;
-    fetch(`${URL_SCRIPT}?tipo=quiniela`)
-    .then(response => response.json())
-    .then(datos => {
-        HISTORIAL_GENERAL_SHEETS = datos;
-        verificarBloqueoPartido();
-    })
-    .catch(error => console.error("Error cargando historial global:", error));
-}
-
-// ==========================================================================
-// FUNCIÓN VERIFICAR BLOQUEO OPTIMIZADA Y CORREGIDA
-// ==========================================================================
-function verificarBloqueoPartido() {
-    const usuario = document.getElementById('quinielaParticipante').value;
-    const idSel = document.getElementById('selectPartido').value;
-    
-    const capaBloqueo = document.getElementById('bloqueoMensaje');
-    const btnGuardar = document.getElementById('btnGuardarQuiniela');
-    const txtMarcador = document.getElementById('txtMarcadorGuardado');
-    
-    // Búsqueda tolerante de inputs
-    const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
-    const inputGolesVisitante = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
-
-    if (inputGolesLocal) inputGolesLocal.disabled = false;
-    if (inputGolesVisitante) inputGolesVisitante.disabled = false;
-
-    // Limpiar clases previas
-    btnGuardar.classList.remove("estado-pendiente");
-    btnGuardar.style.background = ""; 
-
-    // CASO 1: Si falta seleccionar el nombre de usuario o el partido
-    if (!usuario || !idSel) {
-        if (capaBloqueo) capaBloqueo.style.display = "none";
-        btnGuardar.disabled = true;
-        btnGuardar.innerText = "🔒 Bloqueado (Falta tu Nombre)";
-        return; 
-    }
-
-    const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
-    const ahora = new Date();
-
-    const prediccionExistente = HISTORIAL_GENERAL_SHEETS.find(
-        p => p.participante.trim().toLowerCase() === usuario.trim().toLowerCase() && p.idPartido.toString() === idSel.toString()
-    );
-
-    if (prediccionExistente) {
-        if (inputGolesLocal) inputGolesLocal.value = prediccionExistente.golesLocal;
-        if (inputGolesVisitante) inputGolesVisitante.value = prediccionExistente.golesVisitante;
-        if (inputGolesLocal) inputGolesLocal.disabled = true;
-        if (inputGolesVisitante) inputGolesVisitante.disabled = true;
-    }
-
-    // CASO 2: Si el partido ya caducó por tiempo de bloqueo
-    if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
-        if (prediccionExistente) {
-            if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px;">${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}</span>`;
-        } else {
-            if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; color: #94a3b8;">- - -</span>`;
-            if (inputGolesLocal) inputGolesLocal.value = "";
-            if (inputGolesVisitante) inputGolesVisitante.value = "";
-            if (inputGolesLocal) inputGolesLocal.disabled = true;
-            if (inputGolesVisitante) inputGolesVisitante.disabled = true;
+        function actualizarHistorialDesdeSheets() {
+            if (!URL_SCRIPT) return;
+            fetch(`${URL_SCRIPT}?tipo=quiniela`)
+            .then(response => response.json())
+            .then(datos => {
+                HISTORIAL_GENERAL_SHEETS = datos;
+                verificarBloqueoPartido();
+            })
+            .catch(error => console.error("Error cargando historial global:", error));
         }
 
-        if (capaBloqueo) capaBloqueo.style.display = "flex";
-        btnGuardar.disabled = true;
-        btnGuardar.style.background = "#ef4444"; 
-        btnGuardar.style.cursor = "not-allowed"; 
-        btnGuardar.innerText = "⏰ Tiempo Agotado ¡Ya empezó!";
-        return;
-    }
+        // ==========================================================================
+        // FUNCIÓN VERIFICAR BLOQUEO OPTIMIZADA Y CORREGIDA
+        // ==========================================================================
+        function verificarBloqueoPartido() {
+            const usuario = document.getElementById('quinielaParticipante').value;
+            const idSel = document.getElementById('selectPartido').value;
+            
+            const capaBloqueo = document.getElementById('bloqueoMensaje');
+            const btnGuardar = document.getElementById('btnGuardarQuiniela');
+            const txtMarcador = document.getElementById('txtMarcadorGuardado');
+            
+            const inputGolesLocal = document.getElementById('golesLocal');
+            const inputGolesVisitante = document.getElementById('golesVisitante');
 
-    // CASO 3: Si el usuario ya guardó previamente una predicción
-    if (prediccionExistente) {
-        if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px;">${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}</span>`;
-        if (capaBloqueo) capaBloqueo.style.display = "flex";
-        btnGuardar.disabled = true;
-        btnGuardar.innerText = "🔒 Bloqueado (Ya participaste)";
-        return;
-    }
+            if (inputGolesLocal) inputGolesLocal.disabled = false;
+            if (inputGolesVisitante) inputGolesVisitante.disabled = false;
 
-    // CASO 4: El partido está libre, evaluamos si ingresó los goles
-    if (capaBloqueo) capaBloqueo.style.display = "none";
-    
-    // ✅ CORREGIDO: Leemos el valor directo sin .trim() para evitar fallos en inputs de número
-    const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
-    const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
-    const tieneGoles = gLocal !== "" && gVisitante !== "";
+            btnGuardar.classList.remove("estado-pendiente");
+            btnGuardar.style.background = ""; 
 
-    if (!tieneGoles) {
-        btnGuardar.disabled = true;
-        btnGuardar.classList.add("estado-pendiente"); 
-        btnGuardar.innerText = "✍️ Completa los goles para guardar";
-    } else {
-        btnGuardar.disabled = false;
-        btnGuardar.style.background = "#16a34a"; // Color verde nítido directo en JS
-        btnGuardar.style.color = "#ffffff";
-        btnGuardar.style.cursor = "pointer"; 
-        btnGuardar.innerText = "⚽ Guardar mi Predicción";
-    }
-}
+            // CASO 1: Si falta seleccionar el nombre de usuario o el partido
+            if (!usuario || !idSel) {
+                if (capaBloqueo) capaBloqueo.style.display = "none";
+                btnGuardar.disabled = true;
+                btnGuardar.innerText = "🔒 Bloqueado (Falta tu Nombre)";
+                return; 
+            }
 
-// ==========================================================================
-// ENVÍO DE DATOS NETO CORREGIDO
-// ==========================================================================
-function enviarPronostico() {
-    const usuario = document.getElementById('quinielaParticipante').value;
-    const idSel = document.getElementById('selectPartido').value;
-    
-    // ✅ CORREGIDO: También usamos la búsqueda tolerante aquí por seguridad
-    const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
-    const inputGolesVisitante = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
+            const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
+            const ahora = new Date();
 
-    const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
-    const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
+            const prediccionExistente = HISTORIAL_GENERAL_SHEETS.find(
+                p => p.participante.trim().toLowerCase() === usuario.trim().toLowerCase() && p.idPartido.toString() === idSel.toString()
+            );
 
-    if (!idSel) return;
-    const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
-    const ahora = new Date();
+            if (prediccionExistente) {
+                if (inputGolesLocal) inputGolesLocal.value = prediccionExistente.golesLocal;
+                if (inputGolesVisitante) inputGolesVisitante.value = prediccionExistente.golesVisitante;
+                if (inputGolesLocal) inputGolesLocal.disabled = true;
+                if (inputGolesVisitante) inputGolesVisitante.disabled = true;
+            }
 
-    if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
-        alert("❌ ¡Trampa detectada! No podés mandar pronósticos de partidos que ya empezaron.");
-        return; 
-    }
+            // CASO 2: Si el partido ya caducó por tiempo de bloqueo
+            if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
+                if (prediccionExistente) {
+                    if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px;">${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}</span>`;
+                } else {
+                    if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; color: #94a3b8;">- - -</span>`;
+                    if (inputGolesLocal) inputGolesLocal.value = "";
+                    if (inputGolesVisitante) inputGolesVisitante.value = "";
+                    if (inputGolesLocal) inputGolesLocal.disabled = true;
+                    if (inputGolesVisitante) inputGolesVisitante.disabled = true;
+                }
 
-    if (!usuario || gLocal === "" || gVisitante === "") return;
+                if (capaBloqueo) capaBloqueo.style.display = "flex";
+                btnGuardar.disabled = true;
+                btnGuardar.style.background = "#ef4444"; 
+                btnGuardar.style.cursor = "not-allowed"; 
+                btnGuardar.innerText = "⏰ Tiempo Agotado ¡Ya empezó!";
+                return;
+            }
 
-    const btn = document.getElementById('btnGuardarQuiniela');
-    btn.disabled = true;
-    btn.innerText = "⏳ Guardando en la nube...";
+            // CASO 3: Si el usuario ya guardó previamente una predicción
+            if (prediccionExistente) {
+                if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px;">${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}</span>`;
+                if (capaBloqueo) capaBloqueo.style.display = "flex";
+                btnGuardar.disabled = true;
+                btnGuardar.innerText = "🔒 Bloqueado (Ya participaste)";
+                return;
+            }
 
-    const datosQuiniela = {
-        accion: "guardarQuiniela",
-        participante: usuario,
-        equipoLocal: partido.loc,
-        golesLocal: parseInt(gLocal),
-        golesVisitante: parseInt(gVisitante),
-        equipoVisitante: partido.vis,
-        idPartido: partido.id
-    };
+            // CASO 4: El partido está libre, evaluamos si ingresó los goles
+            if (capaBloqueo) capaBloqueo.style.display = "none";
+            
+            const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
+            const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
+            const tieneGoles = gLocal !== "" && gVisitante !== "";
 
-    fetch(URL_SCRIPT, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datosQuiniela)
-    })
-    .then(() => {
-        HISTORIAL_GENERAL_SHEETS.push({
-            participante: usuario,
-            golesLocal: parseInt(gLocal),
-            golesVisitante: parseInt(gVisitante),
-            idPartido: idSel
-        });
+            if (!tieneGoles) {
+                btnGuardar.disabled = true;
+                btnGuardar.classList.add("estado-pendiente"); 
+                btnGuardar.innerText = "✍️ Completa los goles para guardar";
+            } else {
+                btnGuardar.disabled = false;
+                btnGuardar.style.background = "#16a34a"; 
+                btnGuardar.style.color = "#ffffff";
+                btnGuardar.style.cursor = "pointer"; 
+                btnGuardar.innerText = "⚽ Guardar mi Predicción";
+            }
+        }
 
-        alert(`🏆 ¡Pronóstico Nítido! Registrado: ${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}.`);
-        if (inputGolesLocal) inputGolesLocal.value = "";
-        if (inputGolesVisitante) inputGolesVisitante.value = "";
-        
-        verificarBloqueoPartido();
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("❌ Hubo un error al conectar con la base de datos.");
-        verificarBloqueoPartido();
-    });
-}
+        // ==========================================================================
+        // ENVÍO DE DATOS NETO CORREGIDO
+        // ==========================================================================
+        function enviarPronostico() {
+            const usuario = document.getElementById('quinielaParticipante').value;
+            const idSel = document.getElementById('selectPartido').value;
+            
+            const inputGolesLocal = document.getElementById('golesLocal');
+            const inputGolesVisitante = document.getElementById('golesVisitante');
+
+            const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
+            const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
+
+            if (!idSel) return;
+            const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
+            const ahora = new Date();
+
+            if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
+                alert("❌ ¡Trampa detectada! No podés mandar pronósticos de partidos que ya empezaron.");
+                return; 
+            }
+
+            if (!usuario || gLocal === "" || gVisitante === "") return;
+
+            const btn = document.getElementById('btnGuardarQuiniela');
+            btn.disabled = true;
+            btn.innerText = "⏳ Guardando en la nube...";
+
+            const datosQuiniela = {
+                accion: "guardarQuiniela",
+                participante: usuario,
+                equipoLocal: partido.loc,
+                golesLocal: parseInt(gLocal),
+                golesVisitante: parseInt(gVisitante),
+                equipoVisitante: partido.vis,
+                idPartido: partido.id
+            };
+
+            fetch(URL_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datosQuiniela)
+            })
+            .then(() => {
+                HISTORIAL_GENERAL_SHEETS.push({
+                    participante: usuario,
+                    golesLocal: parseInt(gLocal),
+                    golesVisitante: parseInt(gVisitante),
+                    idPartido: idSel
+                });
+
+                alert(`🏆 ¡Pronóstico Nítido! Registrado: ${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}.`);
+                if (inputGolesLocal) inputGolesLocal.value = "";
+                if (inputGolesVisitante) inputGolesVisitante.value = "";
+                
+                verificarBloqueoPartido();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("❌ Hubo un error al conectar con la base de datos.");
+                verificarBloqueoPartido();
+            });
+        }
 
         function abrirCerrarRanking() {
             const panel = document.getElementById("panelRanking");
