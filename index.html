@@ -582,7 +582,8 @@
 
         // Base de Datos Estructurada de Partidos (Fases Limpias)
         const LISTA_PARTIDOS = [
-            // --- DIECISEISAVOS DE FINAL ---
+            // --- DIECISEISAVOS DE FINAL ---
+
             { id: "P75", fase: "Dieciseisavos", desc: "Dom 28/06 - 1:00 PM - P75: Sudáfrica v Canadá", loc: "Sudáfrica", flLoc: "🇿🇦", vis: "Canadá", flVis: "🇨🇦", bloqueo: new Date("2026-06-28T13:00:00-06:00") },
             { id: "P76", fase: "Dieciseisavos", desc: "Lun 29/06 - 11:00 AM - P76: Brasil v Japón", loc: "Brasil", flLoc: "🇧🇷", vis: "Japón", flVis: "🇯🇵", bloqueo: new Date("2026-06-29T11:00:00-06:00") },
             { id: "P77", fase: "Dieciseisavos", desc: "Lun 29/06 - 2:30 PM - P77: Alemania v Paraguay", loc: "Alemania", flLoc: "🇩🇪", vis: "Paraguay", flVis: "🇵🇾", bloqueo: new Date("2026-06-29T14:30:00-06:00") },
@@ -649,7 +650,7 @@
             cambiarPartidoSeleccionado();
         }
 
-        function cambiarPartidoSeleccionado() {
+       function cambiarPartidoSeleccionado() {
             const selectPartido = document.getElementById('selectPartido');
             if (!selectPartido) return;
 
@@ -664,14 +665,20 @@
             const lblVisitante = document.getElementById('lblVisitante');
             const flagVisitante = document.getElementById('flagVisitante');
 
+            const inputGolesLocal = document.getElementById('golesLocal');
+            const inputGolesVisita = document.getElementById('golesVisitante');
+
+            // 🧼 ¡EL FIX AQUÍ! Cada vez que cambie de partido, limpiamos los inputs 
+            // para que no se queden arrastrando los goles del partido anterior.
+            if (inputGolesLocal) inputGolesLocal.value = "";
+            if (inputGolesVisita) inputGolesVisita.value = "";
+
             if (lblLocal) lblLocal.innerText = partido.loc;
             if (flagLocal) flagLocal.innerText = obtenerBanderaReal(partido.flLoc, partido.loc); 
             if (lblVisitante) lblVisitante.innerText = partido.vis;
             if (flagVisitante) flagVisitante.innerText = obtenerBanderaReal(partido.flVis, partido.vis); 
 
             // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
-            const inputGolesLocal = document.getElementById('golesLocal');
-            const inputGolesVisita = document.getElementById('golesVisitante');
             let msgEspera = document.getElementById('msgFaseEspera');
 
             if (idSel.startsWith("FUT_")) {
@@ -694,14 +701,13 @@
                     msgEspera.style.display = 'block';
                 }
             } else {
-                // ✅ Restauración perfecta de estilos nativos de CSS sin romper la alineación
                 if (inputGolesLocal) inputGolesLocal.style.display = '';
                 if (inputGolesVisita) inputGolesVisita.style.display = '';
                 if (msgEspera) msgEspera.style.display = 'none';
             }
 
             verificarBloqueoPartido();
-        } // ✅ AQUÍ SE HABÍA QUEDADO ABIERTO. YA SE CERRÓ LA FUNCIÓN CORRECTAMENTE.
+        }
 
         function actualizarHistorialDesdeSheets() {
             if (!URL_SCRIPT) return;
@@ -805,8 +811,108 @@
             }
         }
 
+ // ==========================================================================
+        // FUNCIÓN DE NOTIFICACIÓN PREMIUM: LIQUID GLASS 100% TRANSPARENTE
         // ==========================================================================
-        // ENVÍO DE DATOS NETO CORREGIDO
+        function mostrarModalApple(titulo, mensaje) {
+            // 1. Inyectar dinámicamente los estilos de lente de agua pura sin fondo blanco
+            if (!document.getElementById('estilosModalApple')) {
+                const estilos = document.createElement('style');
+                estilos.id = 'estilosModalApple';
+                estilos.innerHTML = `
+                    @keyframes liquidLensIn {
+                        from { 
+                            opacity: 0; 
+                            transform: translate(-50%, -50%) scale(0.95); 
+                        }
+                        to { 
+                            opacity: 1; 
+                            transform: translate(-50%, -50%) scale(1.03); /* Mantiene el efecto lupa/aumento */
+                        }
+                    }
+                    @keyframes liquidLensOut {
+                        from { transform: translate(-50%, -50%) scale(1.03); opacity: 1; }
+                        to { transform: translate(-50%, -50%) scale(0.98); opacity: 0; }
+                    }
+                    .modal-apple-glass {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        z-index: 12000;
+                        width: 90%;
+                        
+                        /* 🖥️ Dimensiones para PC */
+                        max-width: 750px;
+                        padding: 45px 35px;
+                        
+                        /* 💧 TRANSPARENCIA ABSOLUTA: Nada de fondo blanco, agua 100% pura */
+                        background: transparent;
+                        
+                        /* Mantenemos el blur y saturate para distorsionar orgánicamente el fondo verde */
+                        backdrop-filter: blur(12px) saturate(150%);
+                        -webkit-backdrop-filter: blur(12px) saturate(150%);
+                        
+                        /* 🎨 BORDES DE CRISTAL: Definen la silueta de la gota usando solo luz */
+                        border: 1px solid rgba(255, 255, 255, 0.25);
+                        border-top: 2.5px solid rgba(255, 255, 255, 0.8);  /* Destello de luz superior más marcado */
+                        border-left: 2px solid rgba(255, 255, 255, 0.55);
+                        border-radius: 36px;
+                        
+                        /* 🔮 REFRACCIÓN ÓPTICA SIN COLOR: Sombras que moldean el relieve del agua */
+                        box-shadow: 
+                            0 35px 80px rgba(15, 23, 42, 0.2),              /* Sombra proyectada en el fondo */
+                            inset 0 3px 6px rgba(255, 255, 255, 0.65),      /* Brillo de la tensión superficial */
+                            inset 0 -10px 20px rgba(255, 255, 255, 0.15),   /* Luz de rebote inferior */
+                            inset -3px 0 15px rgba(255, 255, 255, 0.08);
+                        
+                        text-align: center;
+                        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                        animation: liquidLensIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                        box-sizing: border-box;
+                    }
+                    .modal-apple-glass.salida {
+                        animation: liquidLensOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .modal-apple-glass {
+                            max-width: 330px;
+                            padding: 28px 22px;
+                        }
+                    }
+                `;
+                document.head.appendChild(estilos);
+            }
+
+            // 2. Construcción del contenedor interno
+            const modal = document.createElement('div');
+            modal.className = 'modal-apple-glass';
+            
+            let mensajeFormateado = mensaje;
+            if (mensajeFormateado.includes('rgba(0,0,0,0.04)') || mensajeFormateado.includes('rgba(21, 128, 61, 0.08)') || mensajeFormateado.includes('rgba(22, 163, 74, 0.12)')) {
+                // Forzamos un contenedor de marcador translúcido pero súper nítido
+                mensajeFormateado = mensajeFormateado.replace(/rgba\(.*?\)/g, 'rgba(22, 163, 74, 0.15)')
+                                                     .replace(/color:.*?;/g, 'color: #16a34a; font-weight: 900; font-size: 1.45rem;');
+            }
+
+            modal.innerHTML = `
+                <div style="font-size: 3.5rem; margin-bottom: 12px; filter: drop-shadow(0 6px 14px rgba(22, 163, 74, 0.3));">🏆</div>
+                <h3 style="margin: 0 0 10px 0; font-size: 1.55rem; font-weight: 800; color: #0f172a; letter-spacing: -0.6px; text-shadow: 0 1px 1px rgba(255,255,255,0.6);">${titulo}</h3>
+                <div style="font-size: 1.1rem; font-weight: 700; color: #1e293b; line-height: 1.6; display: inline-block; width: 100%;">${mensajeFormateado}</div>
+            `;
+            document.body.appendChild(modal);
+
+            // 3. Temporizador de 2 segundos exactos
+            setTimeout(() => {
+                modal.classList.add('salida');
+                modal.addEventListener('animationend', () => {
+                    modal.remove();
+                });
+            }, 2300);
+        }
+
+        // ==========================================================================
+        // ENVÍO DE DATOS NETO CORREGIDO Y LIMPIEZA ANTIFANTASMA
         // ==========================================================================
         function enviarPronostico() {
             const usuario = document.getElementById('quinielaParticipante').value;
@@ -823,7 +929,7 @@
             const ahora = new Date();
 
             if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
-                alert("❌ ¡Trampa detectada! No podés mandar pronósticos de partidos que ya empezaron.");
+                mostrarModalApple("Acción Bloqueada", "❌ ¡Trampa detectada!<br>No podés mandar pronósticos de partidos que ya empezaron.");
                 return; 
             }
 
@@ -831,7 +937,60 @@
 
             const btn = document.getElementById('btnGuardarQuiniela');
             btn.disabled = true;
-            btn.innerText = "⏳ Guardando en la nube...";
+            
+            // ⚽ Inyectamos la animación de la pelota corriendo hacia la portería
+            btn.innerHTML = `
+                <div style="position: relative; width: 100%; height: 24px; display: flex; align-items: center; justify-content: flex-start; overflow: hidden;">
+                    <div style="position: absolute; left: 10px; right: 35px; height: 2px; background: rgba(255,255,255,0.2); border-radius: 2px;"></div>
+                    
+                    <span id="balonAnimado" style="
+                        position: absolute; 
+                        left: 0; 
+                        font-size: 1.2rem;
+                        display: inline-block;
+                        animation: rodarYDeslizar 1.5s linear infinite;
+                    ">⚽</span>
+                    
+                    <span style="
+                        position: absolute; 
+                        right: 10px; 
+                        font-size: 1.3rem;
+                    ">🥅</span>
+                </div>
+            `;
+
+            // Inyectar los Keyframes de CSS si no existen para controlar el rodado real
+            if (!document.getElementById('estilosAnimacionBalon')) {
+                const estilosBalon = document.createElement('style');
+                estilosBalon.id = 'estilosAnimacionBalon';
+                estilosBalon.innerHTML = `
+                    @keyframes rodarYDeslizar {
+                        0% {
+                            left: 5px;
+                            transform: rotate(0deg);
+                        }
+                        85% {
+                            opacity: 1;
+                        }
+                        90% {
+                            left: calc(100% - 38px); /* Llega justo a la entrada de la portería */
+                            transform: rotate(720deg); /* Da dos vueltas completas en su eje */
+                            opacity: 1;
+                        }
+                        95% {
+                            left: calc(100% - 30px); /* Entra a la red */
+                            transform: rotate(760deg) scale(0.9); /* Se encoge levemente simulando profundidad en la red */
+                            opacity: 0; /* Golazo, desaparece momentáneamente */
+                        }
+                        100% {
+                            left: 5px;
+                            transform: rotate(0deg);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(estilosBalon);
+            }
 
             const datosQuiniela = {
                 accion: "guardarQuiniela",
@@ -842,6 +1001,10 @@
                 equipoVisitante: partido.vis,
                 idPartido: partido.id
             };
+
+            // ⚡ LIMPIEZA INMEDIATA: Borramos los campos aquí para matar el "efecto inercia" antes que responda el servidor
+            if (inputGolesLocal) inputGolesLocal.value = "";
+            if (inputGolesVisitante) inputGolesVisitante.value = "";
 
             fetch(URL_SCRIPT, {
                 method: "POST",
@@ -857,15 +1020,21 @@
                     idPartido: idSel
                 });
 
-                alert(`🏆 ¡Pronóstico Nítido! Registrado: ${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}.`);
-                if (inputGolesLocal) inputGolesLocal.value = "";
-                if (inputGolesVisitante) inputGolesVisitante.value = "";
+                // Lanzamos la notificación nítida estilo Apple Liquid Glass
+                mostrarModalApple(
+                    "¡Pronóstico Nítido!", 
+                    `Registrado con éxito:<br><span style="font-weight: 700; color: #111827; display: inline-block; margin-top: 6px; background: rgba(0,0,0,0.04); padding: 2px 10px; border-radius: 6px;">${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}</span>`
+                );
                 
                 verificarBloqueoPartido();
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("❌ Hubo un error al conectar con la base de datos.");
+                mostrarModalApple("Error de Conexión", "❌ Hubo un problema al conectar con la base de datos.");
+                
+                // Si la red falla de verdad, restauramos sus valores para que no los tenga que escribir de nuevo
+                if (inputGolesLocal) inputGolesLocal.value = gLocal;
+                if (inputGolesVisitante) inputGolesVisitante.value = gVisitante;
                 verificarBloqueoPartido();
             });
         }
