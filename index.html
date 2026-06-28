@@ -728,7 +728,7 @@ function actualizarHistorialDesdeSheets() {
 }
 
 // ==========================================================================
-// FUNCIÓN VERIFICAR BLOQUEO OPTIMIZADA (CORREGIDA)
+// FUNCIÓN VERIFICAR BLOQUEO OPTIMIZADA Y CORREGIDA
 // ==========================================================================
 function verificarBloqueoPartido() {
     const usuario = document.getElementById('quinielaParticipante').value;
@@ -738,18 +738,18 @@ function verificarBloqueoPartido() {
     const btnGuardar = document.getElementById('btnGuardarQuiniela');
     const txtMarcador = document.getElementById('txtMarcadorGuardado');
     
-    // ✅ CORREGIDO: Ahora usa la misma búsqueda tolerante por si no encuentra los IDs
+    // Búsqueda tolerante de inputs
     const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
     const inputGolesVisitante = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
 
     if (inputGolesLocal) inputGolesLocal.disabled = false;
     if (inputGolesVisitante) inputGolesVisitante.disabled = false;
 
-    // Limpiar estilos dinámicos previos del botón
+    // Limpiar clases previas
     btnGuardar.classList.remove("estado-pendiente");
     btnGuardar.style.background = ""; 
 
-    // CASO 1: Si falta seleccionar el nombre de usuario
+    // CASO 1: Si falta seleccionar el nombre de usuario o el partido
     if (!usuario || !idSel) {
         if (capaBloqueo) capaBloqueo.style.display = "none";
         btnGuardar.disabled = true;
@@ -803,87 +803,89 @@ function verificarBloqueoPartido() {
     // CASO 4: El partido está libre, evaluamos si ingresó los goles
     if (capaBloqueo) capaBloqueo.style.display = "none";
     
-    // ✅ CORREGIDO: Evaluamos el valor directo sin forzar .trim() en inputs numéricos
+    // ✅ CORREGIDO: Leemos el valor directo sin .trim() para evitar fallos en inputs de número
     const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
     const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
-    
-    // Validamos que no estén vacíos (el número 0 es un valor válido en el fútbol)
     const tieneGoles = gLocal !== "" && gVisitante !== "";
 
     if (!tieneGoles) {
         btnGuardar.disabled = true;
         btnGuardar.classList.add("estado-pendiente"); 
-        btnGuardar.style.background = "#d97706"; // Color naranja de advertencia
         btnGuardar.innerText = "✍️ Completa los goles para guardar";
     } else {
         btnGuardar.disabled = false;
-        btnGuardar.classList.remove("estado-pendiente");
-        btnGuardar.style.background = "#16a34a"; // Color verde nítido para guardar
+        btnGuardar.style.background = "#16a34a"; // Color verde nítido directo en JS
+        btnGuardar.style.color = "#ffffff";
         btnGuardar.style.cursor = "pointer"; 
         btnGuardar.innerText = "⚽ Guardar mi Predicción";
     }
+}
 
-        // ==========================================================================
-        // ENVÍO DE DATOS NETO (YA SIN EL ALERT FEO)
-        // ==========================================================================
-        function enviarPronostico() {
-            const usuario = document.getElementById('quinielaParticipante').value;
-            const idSel = document.getElementById('selectPartido').value;
-            const gLocal = document.getElementById('golesLocal').value;
-            const gVisitante = document.getElementById('golesVisitante').value;
+// ==========================================================================
+// ENVÍO DE DATOS NETO CORREGIDO
+// ==========================================================================
+function enviarPronostico() {
+    const usuario = document.getElementById('quinielaParticipante').value;
+    const idSel = document.getElementById('selectPartido').value;
+    
+    // ✅ CORREGIDO: También usamos la búsqueda tolerante aquí por seguridad
+    const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
+    const inputGolesVisitante = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
 
-            if (!idSel) return;
-            const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
-            const ahora = new Date();
+    const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
+    const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
 
-            if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
-                alert("❌ ¡Trampa detectada! No podés mandar pronósticos de partidos que ya empezaron.");
-                return; 
-            }
+    if (!idSel) return;
+    const partido = LISTA_PARTIDOS.find(p => p.id === idSel);
+    const ahora = new Date();
 
-            // Esta validación queda por pura seguridad del backend, el botón ya no dejará dar clic antes
-            if (!usuario || gLocal === "" || gVisitante === "") return;
+    if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
+        alert("❌ ¡Trampa detectada! No podés mandar pronósticos de partidos que ya empezaron.");
+        return; 
+    }
 
-            const btn = document.getElementById('btnGuardarQuiniela');
-            btn.disabled = true;
-            btn.innerText = "⏳ Guardando en la nube...";
+    if (!usuario || gLocal === "" || gVisitante === "") return;
 
-            const datosQuiniela = {
-                accion: "guardarQuiniela",
-                participante: usuario,
-                equipoLocal: partido.loc,
-                golesLocal: parseInt(gLocal),
-                golesVisitante: parseInt(gVisitante),
-                equipoVisitante: partido.vis,
-                idPartido: partido.id
-            };
+    const btn = document.getElementById('btnGuardarQuiniela');
+    btn.disabled = true;
+    btn.innerText = "⏳ Guardando en la nube...";
 
-            fetch(URL_SCRIPT, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(datosQuiniela)
-            })
-            .then(() => {
-                HISTORIAL_GENERAL_SHEETS.push({
-                    participante: usuario,
-                    golesLocal: parseInt(gLocal),
-                    golesVisitante: parseInt(gVisitante),
-                    idPartido: idSel
-                });
+    const datosQuiniela = {
+        accion: "guardarQuiniela",
+        participante: usuario,
+        equipoLocal: partido.loc,
+        golesLocal: parseInt(gLocal),
+        golesVisitante: parseInt(gVisitante),
+        equipoVisitante: partido.vis,
+        idPartido: partido.id
+    };
 
-                alert(`🏆 ¡Pronóstico Nítido! Registrado: ${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}.`);
-                document.getElementById('golesLocal').value = "";
-                document.getElementById('golesVisitante').value = "";
-                
-                verificarBloqueoPartido();
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("❌ Hubo un clavo al conectar con la base de datos.");
-                verificarBloqueoPartido();
-            });
-        }
+    fetch(URL_SCRIPT, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datosQuiniela)
+    })
+    .then(() => {
+        HISTORIAL_GENERAL_SHEETS.push({
+            participante: usuario,
+            golesLocal: parseInt(gLocal),
+            golesVisitante: parseInt(gVisitante),
+            idPartido: idSel
+        });
+
+        alert(`🏆 ¡Pronóstico Nítido! Registrado: ${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}.`);
+        if (inputGolesLocal) inputGolesLocal.value = "";
+        if (inputGolesVisitante) inputGolesVisitante.value = "";
+        
+        verificarBloqueoPartido();
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("❌ Hubo un error al conectar con la base de datos.");
+        verificarBloqueoPartido();
+    });
+}
 
         function abrirCerrarRanking() {
             const panel = document.getElementById("panelRanking");
