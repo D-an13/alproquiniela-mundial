@@ -592,7 +592,7 @@
             { id: "P79", fase: "Dieciseisavos", desc: "Mar 30/06 - 11:00 AM - P79: Costa de Marfil v Noruega", loc: "Costa de Marfil", flLoc: "🇨🇮", vis: "Noruega", flVis: "🇳🇴", bloqueo: new Date("2026-06-30T11:00:00-06:00") },
             { id: "P80", fase: "Dieciseisavos", desc: "Mar 30/06 - 3:00 PM - P80: Francia v Suecia", loc: "Francia", flLoc: "🇫🇷", vis: "Suecia", flVis: "🇸🇪", bloqueo: new Date("2026-06-30T15:00:00-06:00") },
             { id: "P81", fase: "Dieciseisavos", desc: "Mar 30/06 - 7:00 PM - P81: México v Ecuador", loc: "México", flLoc: "🇲🇽", vis: "Ecuador", flVis: "🇪🇨", bloqueo: new Date("2026-06-30T19:00:00-06:00") },
-            { id: "P82", fase: "Dieciseisavos", desc: "Mié 01/07 - 10:00 AM - P82: Inglaterra v Por Definir", loc: "Inglaterra", flLoc: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-01T10:00:00-06:00") },
+            { id: "P82", fase: "Dieciseisavos", desc: "Mié 01/07 - 10:00 AM - P82: Inglaterra v Por Definir", loc: "Inglaterra", flLoc: "🇬🇧", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-01T10:00:00-06:00") },
             { id: "P83", fase: "Dieciseisavos", desc: "Mié 01/07 - 2:00 PM - P83: Bélgica v Por Definir", loc: "Bélgica", flLoc: "🇧🇪", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-01T14:00:00-06:00") },
             { id: "P84", fase: "Dieciseisavos", desc: "Mié 01/07 - 6:00 PM - P84: Estados Unidos v Bosnia y Her.", loc: "Estados Unidos", flLoc: "🇺🇸", vis: "Bosnia y Her.", flVis: "🇧🇦", bloqueo: new Date("2026-07-01T18:00:00-06:00") },
             { id: "P85", fase: "Dieciseisavos", desc: "Jue 02/07 - 1:00 PM - P85: España v Por Definir", loc: "España", flLoc: "🇪🇸", vis: "Por Definir", flVis: "🏳️", bloqueo: new Date("2026-07-02T13:00:00-06:00") },
@@ -675,7 +675,7 @@
     if (flagVisitante) flagVisitante.innerText = obtenerBanderaReal(partido.flVis, partido.vis); 
 
     // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
-    // Buscamos los inputs de goles. Ajusta 'inputGolesLocal' e 'inputGolesVisita' si tus IDs son diferentes
+    // Buscamos los inputs usando el mismo método seguro en todo tu script
     const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
     const inputGolesVisita = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
     
@@ -696,7 +696,7 @@
                 <span class="text-sm font-semibold text-slate-500 block">⏳ Fase en espera</span>
                 <span class="text-xs text-slate-400 block mt-0.5">Falta por definir a los equipos clasificados</span>
             `;
-            // Lo metemos justo en medio de la tarjeta (o donde consideres mejor visualmente)
+            // Lo metemos justo en medio de la tarjeta
             const contenedorPronostico = lblLocal.closest('.flex') || lblLocal.parentElement;
             if (contenedorPronostico) {
                 contenedorPronostico.appendChild(msgEspera);
@@ -705,9 +705,9 @@
             msgEspera.style.display = 'block';
         }
     } else {
-        // Si es un partido normal (Dieciseisavos), volvemos a mostrar los inputs de goles
-        if (inputGolesLocal) inputGolesLocal.style.style.display = 'block';
-        if (inputGolesVisita) inputGolesVisita.style.style.display = 'block';
+        // ✅ CORREGIDO: Se quitó el doble .style
+        if (inputGolesLocal) inputGolesLocal.style.display = 'block';
+        if (inputGolesVisita) inputGolesVisita.style.display = 'block';
         
         // Ocultamos el mensaje de espera
         if (msgEspera) msgEspera.style.display = 'none';
@@ -716,21 +716,21 @@
     verificarBloqueoPartido();
 }
 
-        function actualizarHistorialDesdeSheets() {
-            if (!URL_SCRIPT) return;
-            fetch(`${URL_SCRIPT}?tipo=quiniela`)
-            .then(response => response.json())
-            .then(datos => {
-                HISTORIAL_GENERAL_SHEETS = datos;
-                verificarBloqueoPartido();
-            })
-            .catch(error => console.error("Error cargando historial global:", error));
-        }
+function actualizarHistorialDesdeSheets() {
+    if (!URL_SCRIPT) return;
+    fetch(`${URL_SCRIPT}?tipo=quiniela`)
+    .then(response => response.json())
+    .then(datos => {
+        HISTORIAL_GENERAL_SHEETS = datos;
+        verificarBloqueoPartido();
+    })
+    .catch(error => console.error("Error cargando historial global:", error));
+}
 
-        // ==========================================================================
-        // FUNCIÓN VERIFICAR BLOQUEO OPTIMIZADA (OPCIÓN 3)
-        // ==========================================================================
-     function verificarBloqueoPartido() {
+// ==========================================================================
+// FUNCIÓN VERIFICAR BLOQUEO OPTIMIZADA (CORREGIDA)
+// ==========================================================================
+function verificarBloqueoPartido() {
     const usuario = document.getElementById('quinielaParticipante').value;
     const idSel = document.getElementById('selectPartido').value;
     
@@ -738,8 +738,9 @@
     const btnGuardar = document.getElementById('btnGuardarQuiniela');
     const txtMarcador = document.getElementById('txtMarcadorGuardado');
     
-    const inputGolesLocal = document.getElementById('golesLocal');
-    const inputGolesVisitante = document.getElementById('golesVisitante');
+    // ✅ CORREGIDO: Ahora usa la misma búsqueda tolerante por si no encuentra los IDs
+    const inputGolesLocal = document.getElementById('golesLocal') || document.querySelector('input[type="number"]');
+    const inputGolesVisitante = document.getElementById('golesVisitante') || document.querySelectorAll('input[type="number"]')[1];
 
     if (inputGolesLocal) inputGolesLocal.disabled = false;
     if (inputGolesVisitante) inputGolesVisitante.disabled = false;
