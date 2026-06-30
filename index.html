@@ -562,24 +562,36 @@
     </div> 
 
     <div id="panelRanking">
-        <div class="ranking-header">
-            <h3>🏆 Tabla de Posiciones</h3>
-            <button class="btn-cerrar-ranking" onclick="abrirCerrarRanking()">×</button>
-        </div>
-        <div class="ranking-body">
-            <div id="loadingRanking" class="loader-ranking">⚽ Trayendo tabla en tiempo real...</div>
-            <table id="tablaRankingWeb" style="width: 100%; display: none;" class="tabla-ranking">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">Pos</th>
-                        <th style="text-align: left; padding-left: 15px;">Participante</th>
-                        <th style="width: 60px;">Pts</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpoRankingWeb"></tbody>
-            </table>
+    <div class="ranking-header">
+        <h3>🏆 Tabla de Posiciones</h3>
+        <button class="btn-cerrar-ranking" onclick="abrirCerrarRanking()">×</button>
+    </div>
+    <div class="ranking-body">
+        <div id="loadingRanking" class="loader-ranking">⚽ Trayendo tabla en tiempo real...</div>
+        <table id="tablaRankingWeb" style="width: 100%; display: none;" class="tabla-ranking">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Pos</th>
+                    <th style="text-align: left; padding-left: 15px;">Participante</th>
+                    <th style="width: 60px;">Pts</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoRankingWeb"></tbody>
+        </table>
+
+        <!-- ========================================== -->
+        <!-- NUEVA SECCIÓN: PARTIDOS DISPUTADOS        -->
+        <!-- ========================================== -->
+        <div id="seccionHistorial" style="margin-top: 24px; border-top: 2px solid #f1f5f9; padding-top: 16px;">
+    <h4 style="color: #15803d; margin-bottom: 12px; font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+        Partidos Disputados
+    </h4>
+    <div id="listaPartidosDisputados" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+                <!-- Aquí se inyectarán dinámicamente los partidos -->
+            </div>
         </div>
     </div>
+</div>
 
     <!-- ==========================================================================
        2. LOGICA MOTOR DE JUEGO JAVASCRIPT
@@ -1022,21 +1034,24 @@
                 body: JSON.stringify(datosQuiniela)
             })
             .then(() => {
-                HISTORIAL_GENERAL_SHEETS.push({
-                    participante: usuario,
-                    golesLocal: parseInt(gLocal),
-                    golesVisitante: parseInt(gVisitante),
-                    idPartido: idSel
-                });
+    HISTORIAL_GENERAL_SHEETS.push({
+        participante: usuario,
+        golesLocal: parseInt(gLocal),
+        golesVisitante: parseInt(gVisitante),
+        idPartido: idSel
+    });
 
-                // Lanzamos la notificación nítida estilo Apple Liquid Glass
-                mostrarModalApple(
-                    "¡Pronóstico Nítido!", 
-                    `Registrado con éxito:<br><span style="font-weight: 700; color: #111827; display: inline-block; margin-top: 6px; background: rgba(0,0,0,0.04); padding: 2px 10px; border-radius: 6px;">${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}</span>`
-                );
-                
-                verificarBloqueoPartido();
-            })
+    // Lanzamos la notificación nítida estilo Apple Liquid Glass
+    mostrarModalApple(
+        "¡Pronóstico Nítido!", 
+        `Registrado con éxito:<br><span style="font-weight: 700; color: #111827; display: inline-block; margin-top: 6px; background: rgba(0,0,0,0.04); padding: 2px 10px; border-radius: 6px;">${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}</span>`
+    );
+    
+    // 🔥 RE-RENDERIZADO AUTOMÁTICO INMEDIATO:
+    renderizarPartidosDisputados();
+    
+    verificarBloqueoPartido();
+})
             .catch(error => {
                 console.error("Error:", error);
                 mostrarModalApple("Error de Conexión", "❌ Hubo un problema al conectar con la base de datos.");
@@ -1061,54 +1076,102 @@
             }
         }
 
-        function obtenerRankingServidor() {
-            const loader = document.getElementById("loadingRanking");
-            const tabla = document.getElementById("tablaRankingWeb");
-            const cuerpo = document.getElementById("cuerpoRankingWeb");
+      function obtenerRankingServidor() {
+    const loader = document.getElementById("loadingRanking");
+    const tabla = document.getElementById("tablaRankingWeb");
+    const cuerpo = document.getElementById("cuerpoRankingWeb");
+    const contenedorHistorial = document.getElementById("listaPartidosDisputados");
+    
+    if (!loader || !tabla || !cuerpo || !contenedorHistorial) return;
+    
+    loader.style.display = "block";
+    loader.innerHTML = "⚽ Trayendo posiciones y partidos oficiales...";
+    tabla.style.display = "none";
+    cuerpo.innerHTML = "";
+    contenedorHistorial.innerHTML = "";
+    
+    // 1. Jalamos el objeto estructurado desde tu Apps Script
+    fetch(`${URL_SCRIPT}?tipo=ranking`)
+        .then(response => response.json())
+        .then(data => {
             
-            if (!loader || !tabla || !cuerpo) return;
+            // 🏆 FIX AQUÍ: Extraemos la lista de posiciones desde data.ranking
+            const listaRanking = data.ranking || [];
             
-            loader.style.display = "block";
-            loader.innerHTML = "⚽ Trayendo tabla en tiempo real...";
-            tabla.style.display = "none";
-            cuerpo.innerHTML = "";
-            
-            fetch(`${URL_SCRIPT}?tipo=ranking`)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data || data.length === 0) {
-                        loader.innerHTML = "🏆 ¡La competencia aún no empieza!<br><span style='font-size:0.8rem; font-weight:normal; color:#64748b;'>Las posiciones se actualizarán tras el primer partido.</span>";
-                        return;
-                    }
+            if (listaRanking.length === 0) {
+                cuerpo.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:#64748b;">¡La competencia aún no empieza!</td></tr>`;
+            } else {
+                listaRanking.forEach((fila, indice) => {
+                    const tr = document.createElement("tr");
+                    let numPosicion = fila.posicion || (indice + 1);
+                    let medallaPos = numPosicion;
                     
-                    data.forEach((fila, indice) => {
-                        const tr = document.createElement("tr");
-                        let numPosicion = fila.posicion || (indice + 1);
-                        let medallaPos = numPosicion;
-                        
-                        if (numPosicion === 1) { medallaPos = "🥇"; tr.classList.add("puesto-1"); }
-                        else if (numPosicion === 2) { medallaPos = "🥈"; tr.classList.add("puesto-2"); }
-                        else if (numPosicion === 3) { medallaPos = "🥉"; tr.classList.add("puesto-3"); }
-                        
-                        let nombreJugador = fila.participante || fila.Participante || "Usuario";
-                        let puntosJugador = fila.puntos !== undefined ? fila.puntos : 0;
-                        
-                        tr.innerHTML = `
-                            <td style="font-weight: 800; text-align: center;">${medallaPos}</td>
-                            <td style="text-align: left; padding-left: 15px; font-weight: bold; color: #1e293b;">${nombreJugador}</td>
-                            <td style="font-weight: 800; color: #15803d; font-size: 1rem; text-align: center;">${puntosJugador} Pts</td>
-                        `;
-                        cuerpo.appendChild(tr);
-                    });
+                    if (numPosicion === 1) { medallaPos = "🥇"; tr.classList.add("puesto-1"); }
+                    else if (numPosicion === 2) { medallaPos = "🥈"; tr.classList.add("puesto-2"); }
+                    else if (numPosicion === 3) { medallaPos = "🥉"; tr.classList.add("puesto-3"); }
                     
-                    loader.style.display = "none";
-                    tabla.style.display = "table";
-                })
-                .catch(error => {
-                    console.error("Clavo al obtener el ranking:", error);
-                    loader.innerHTML = "❌ No se pudo conectar con el servidor de Ranking.";
+                    let nombreJugador = fila.participante || fila.Participante || "Usuario";
+                    let puntosJugador = fila.puntos !== undefined ? fila.puntos : 0;
+                    
+                    tr.innerHTML = `
+                        <td style="font-weight: 800; text-align: center;">${medallaPos}</td>
+                        <td style="text-align: left; padding-left: 15px; font-weight: bold; color: #1e293b;">${nombreJugador}</td>
+                        <td style="font-weight: 800; color: #15803d; font-size: 1rem; text-align: center;">${puntosJugador} Pts</td>
+                    `;
+                    cuerpo.appendChild(tr);
                 });
-        }
+            }
+            
+        // EN TU ARCHIVO HTML (Dentro de obtenerRankingServidor)
+const partidosJugados = data.partidosJugados || [];
+
+if (partidosJugados.length === 0) {
+    contenedorHistorial.innerHTML = `<div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 10px;">No se han registrado resultados oficiales todavía.</div>`;
+} else {
+    // 🔍 Imprime en la consola del navegador para ver qué te está enviando exactamente el servidor
+    console.log("Datos recibidos del servidor:", partidosJugados);
+
+    [...partidosJugados].reverse().forEach(p => {
+        const divPartido = document.createElement("div");
+        divPartido.style.cssText = `
+            display: flex; justify-content: space-between; align-items: center;
+            background: #f8fafc; padding: 10px 12px; border-radius: 8px;
+            border: 1px solid #e2e8f0; font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        `;
+        
+        let textoPenales = (p.penales || p.Penales || p["Penales"]) ? `<br><span style="font-size: 0.75rem; color: #dc2626; font-weight: bold;">(Penales: Ganó ${p.penales || p.Penales || p["Penales"]})</span>` : "";
+        
+        // Identificamos el ID probando todas las variantes posibles que envía Apps Script
+        let idPartidoActual = p.idPartido || p.id || p["ID Partido"] || p["idPartido"];
+
+        // Buscamos primero en tu LISTA_PARTIDOS local usando el ID
+        const infoPartido = window.LISTA_PARTIDOS ? LISTA_PARTIDOS.find(part => part.id === idPartidoActual) : null;
+        
+        // Mapeo inteligente de nombres
+        let local = infoPartido ? infoPartido.loc : (p["Equipo Local"] || p.equipoLocal || p.local || "Local");
+        let visitante = infoPartido ? infoPartido.vis : (p["Equipo Visitante"] || p.equipoVisitante || p.visitante || "Visitante");
+        
+        divPartido.innerHTML = `
+            <span style="font-weight: 700; color: #64748b; font-size: 0.75rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px;">${idPartidoActual || "—"}</span>
+            <span style="color: #1e293b; font-weight: 600; text-align: right; flex: 1;">
+                ${local} <strong style="color: #ffffff; background: #1e293b; padding: 2px 6px; border-radius: 4px; margin: 0 2px;">${p.golesLocalReal}</strong> 
+                - 
+                <strong style="color: #ffffff; background: #1e293b; padding: 2px 6px; border-radius: 4px; margin: 0 2px;">${p.golesVisitanteReal}</strong> ${visitante}
+                ${textoPenales}
+            </span>
+        `;
+        contenedorHistorial.appendChild(divPartido);
+    });
+}
+            
+            loader.style.display = "none";
+            tabla.style.display = "table";
+        })
+        .catch(error => {
+            console.error("Error al actualizar la tabla de posiciones:", error);
+            loader.innerHTML = "❌ Error al conectar con el servidor de posiciones.";
+        });
+}
 
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('selectFase').value = "Dieciseisavos";
@@ -1120,6 +1183,54 @@
             document.getElementById("golesVisitante").addEventListener("input", verificarBloqueoPartido);
             document.getElementById("selectPartido").addEventListener("change", verificarBloqueoPartido);
         });
+
+function renderizarPartidosDisputados() {
+    const contenedorHistorial = document.getElementById("listaPartidosDisputados");
+    if (!contenedorHistorial) return;
+
+    // Limpiamos el contenedor
+    contenedorHistorial.innerHTML = "";
+
+    // Si no hay datos en el historial local
+    if (!window.HISTORIAL_GENERAL_SHEETS || HISTORIAL_GENERAL_SHEETS.length === 0) {
+        contenedorHistorial.innerHTML = `<div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 10px;">No hay partidos registrados aún.</div>`;
+        return;
+    }
+
+    // Recorremos el historial a la inversa (para que los más nuevos salgan arriba)
+    const historialInvertido = [...HISTORIAL_GENERAL_SHEETS].reverse();
+
+    historialInvertido.forEach(p => {
+        // Buscamos si existe la info del partido en tu LISTA_PARTIDOS para traer banderas o nombres nítidos si se requiere.
+        // Si no, usamos los datos crudos que guardas en el array.
+        const infoPartido = window.LISTA_PARTIDOS ? LISTA_PARTIDOS.find(part => part.id === p.idPartido) : null;
+        const local = infoPartido ? infoPartido.loc : (p.equipoLocal || "Local");
+        const visitante = infoPartido ? infoPartido.vis : (p.equipoVisitante || "Visitante");
+
+        const divPartido = document.createElement("div");
+        divPartido.style.cssText = `
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        `;
+
+        divPartido.innerHTML = `
+            <span style="font-weight: 700; color: #475569;">👤 ${p.participante}</span>
+            <span style="color: #1e293b; font-weight: 500;">
+                ${local} <strong style="color: #15803d; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">${p.golesLocal}</strong> 
+                : 
+                <strong style="color: #15803d; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">${p.golesVisitante}</strong> ${visitante}
+            </span>
+        `;
+        contenedorHistorial.appendChild(divPartido);
+    });
+}
 
 // ==========================================================================
 // EASTER EGG SECRETO: MINIJUEGO DE PENALES (TRAYECTORIA LIMITADA + ALTURA FIJA)
