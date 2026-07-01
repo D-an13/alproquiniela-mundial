@@ -495,7 +495,7 @@
                     <div>
                         <div style="margin-bottom: 16px;">
                             <label class="label-premium">1. ¿Quién eres?</label>
-                            <select id="quinielaParticipante" onchange="verificarBloqueoPartido()" class="select-premium">
+<select id="quinielaParticipante" onchange="document.getElementById('golesLocal').value=''; document.getElementById('golesVisitante').value=''; verificarBloqueoPartido()" class="select-premium">
                                 <option value="">-- Selecciona tu Nombre --</option>
                                 <option value="Dan">Dan</option>
                                 <option value="Nata">Nata</option>
@@ -637,7 +637,7 @@
             return emojiOriginal === "🇬🇧" ? "⚽" : emojiOriginal;
         }
 
-        function cargarPartidosPorFase() {
+         function cargarPartidosPorFase() {
             const faseSeleccionada = document.getElementById('selectFase').value;
             const selectPartido = document.getElementById('selectPartido');
             if (!selectPartido) return; 
@@ -664,6 +664,22 @@
                     
                     return `<option value="${p.id}" style="background-color: ${colorFondo}; color: #1e293b; padding: 6px;">${descLimpia}</option>`;
                 }).join('');
+
+// ==========================================================================
+                // 🤖 AUTO-ENFOQUE INTELIGENTE REUBICADO
+                // ==========================================================================
+                const hoy = new Date();
+                const dia = String(hoy.getDate()).padStart(2, '0');
+                const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+                const fechaHoyClave = `${dia}/${mes}`; // Produce "01/07" hoy
+
+                // Buscamos si hay algún partido para HOY en la fase seleccionada
+                const primerPartidoDeHoy = partidosFiltrados.find(p => p.desc.includes(fechaHoyClave));
+
+                if (primerPartidoDeHoy) {
+                    selectPartido.value = primerPartidoDeHoy.id;
+                    console.log(`🤖 Auto-enfocado con éxito en el juego de hoy: ${primerPartidoDeHoy.id}`);
+                }
             } else {
                 selectPartido.innerHTML = `<option value="">No hay partidos para esta fase</option>`;
             }
@@ -932,8 +948,8 @@
             }, 2300);
         }
 
-        // ==========================================================================
-        // ENVÍO DE DATOS NETO CORREGIDO Y LIMPIEZA ANTIFANTASMA
+     // ==========================================================================
+        // ENVÍO DE DATOS NETO CORREGIDO Y LIMPIEZA ANTIFANTASMA (MODIFICADO)
         // ==========================================================================
         function enviarPronostico() {
             const usuario = document.getElementById('quinielaParticipante').value;
@@ -986,28 +1002,11 @@
                 estilosBalon.id = 'estilosAnimacionBalon';
                 estilosBalon.innerHTML = `
                     @keyframes rodarYDeslizar {
-                        0% {
-                            left: 5px;
-                            transform: rotate(0deg);
-                        }
-                        85% {
-                            opacity: 1;
-                        }
-                        90% {
-                            left: calc(100% - 38px); /* Llega justo a la entrada de la portería */
-                            transform: rotate(720deg); /* Da dos vueltas completas en su eje */
-                            opacity: 1;
-                        }
-                        95% {
-                            left: calc(100% - 30px); /* Entra a la red */
-                            transform: rotate(760deg) scale(0.9); /* Se encoge levemente simulando profundidad en la red */
-                            opacity: 0; /* Golazo, desaparece momentáneamente */
-                        }
-                        100% {
-                            left: 5px;
-                            transform: rotate(0deg);
-                            opacity: 0;
-                        }
+                        0% { left: 5px; transform: rotate(0deg); }
+                        85% { opacity: 1; }
+                        90% { left: calc(100% - 38px); transform: rotate(720deg); opacity: 1; }
+                        95% { left: calc(100% - 30px); transform: rotate(760deg) scale(0.9); opacity: 0; }
+                        100% { left: 5px; transform: rotate(0deg); opacity: 0; }
                     }
                 `;
                 document.head.appendChild(estilosBalon);
@@ -1034,29 +1033,58 @@
                 body: JSON.stringify(datosQuiniela)
             })
             .then(() => {
-    HISTORIAL_GENERAL_SHEETS.push({
-        participante: usuario,
-        golesLocal: parseInt(gLocal),
-        golesVisitante: parseInt(gVisitante),
-        idPartido: idSel
-    });
+                HISTORIAL_GENERAL_SHEETS.push({
+                    participante: usuario,
+                    golesLocal: parseInt(gLocal),
+                    golesVisitante: parseInt(gVisitante),
+                    idPartido: idSel
+                });
 
-    // Lanzamos la notificación nítida estilo Apple Liquid Glass
-    mostrarModalApple(
-        "¡Pronóstico Nítido!", 
-        `Registrado con éxito:<br><span style="font-weight: 700; color: #111827; display: inline-block; margin-top: 6px; background: rgba(0,0,0,0.04); padding: 2px 10px; border-radius: 6px;">${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}</span>`
-    );
-    
-    // 🔥 RE-RENDERIZADO AUTOMÁTICO INMEDIATO:
-    renderizarPartidosDisputados();
-    
-    verificarBloqueoPartido();
-})
+                // Lanzamos la notificación nítida estilo Apple Liquid Glass
+                mostrarModalApple(
+                    "¡Pronóstico Nítido!", 
+                    `Registrado con éxito:<br><span style="font-weight: 700; color: #111827; display: inline-block; margin-top: 6px; background: rgba(0,0,0,0.04); padding: 2px 10px; border-radius: 6px;">${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}</span>`
+                );
+                
+                // 🔥 RE-RENDERIZADO AUTOMÁTICO INMEDIATO:
+                renderizarPartidosDisputados();
+
+                // ==========================================================================
+                // 🚀 MOTOR CONTINUO: Saltar automáticamente al siguiente partido de HOY
+                // ==========================================================================
+                if (window.LISTA_PARTIDOS) {
+                    const selectPartido = document.getElementById("selectPartido");
+                    const idPartidoActual = selectPartido.value;
+                    const partidoActualInfo = LISTA_PARTIDOS.find(p => p.id === idPartidoActual);
+
+                    if (partidoActualInfo) {
+                        const matchFecha = partidoActualInfo.desc.match(/\d{2}\/\d{2}/);
+                        if (matchFecha) {
+                            const fechaHoyClave = matchFecha[0];
+                            // Filtramos solo los de la misma fase y mismo día
+                            const partidosDelDia = LISTA_PARTIDOS.filter(p => p.fase === "Dieciseisavos" && p.desc.includes(fechaHoyClave));
+                            const indiceActual = partidosDelDia.findIndex(p => p.id === idPartidoActual);
+
+                            // Si queda otro partido HOY en la lista, lo seleccionamos
+                            if (indiceActual !== -1 && indiceActual + 1 < partidosDelDia.length) {
+                                const siguientePartido = partidosDelDia[indiceActual + 1];
+                                selectPartido.value = siguientePartido.id;
+                                
+                                // Ejecutamos la carga de la interfaz para refrescar banderas y nombres
+                                if (typeof cambiarPartidoSeleccionado === "function") cambiarPartidoSeleccionado();
+                            } else {
+                                console.log("🏁 Último partido del día guardado. El flujo se detiene.");
+                            }
+                        }
+                    }
+                }
+                // ==========================================================================
+                
+                verificarBloqueoPartido();
+            })
             .catch(error => {
                 console.error("Error:", error);
                 mostrarModalApple("Error de Conexión", "❌ Hubo un problema al conectar con la base de datos.");
-                
-                // Si la red falla de verdad, restauramos sus valores para que no los tenga que escribir de nuevo
                 if (inputGolesLocal) inputGolesLocal.value = gLocal;
                 if (inputGolesVisitante) inputGolesVisitante.value = gVisitante;
                 verificarBloqueoPartido();
@@ -1187,11 +1215,11 @@
 }
 
         document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById('selectFase').value = "Dieciseisavos";
-            cargarPartidosPorFase();
-            actualizarHistorialDesdeSheets(); 
+    document.getElementById('selectFase').value = "Dieciseisavos";
+    cargarPartidosPorFase();
+    actualizarHistorialDesdeSheets(); 
 
-            // EVENT LISTENERS CLAVE: Escuchan en tiempo real cuando escriben goles
+               // EVENT LISTENERS CLAVE: Escuchan en tiempo real cuando escriben goles
             document.getElementById("golesLocal").addEventListener("input", verificarBloqueoPartido);
             document.getElementById("golesVisitante").addEventListener("input", verificarBloqueoPartido);
             document.getElementById("selectPartido").addEventListener("change", verificarBloqueoPartido);
