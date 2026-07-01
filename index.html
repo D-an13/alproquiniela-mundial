@@ -1061,9 +1061,10 @@
                         const matchFecha = partidoActualInfo.desc.match(/\d{2}\/\d{2}/);
                         if (matchFecha) {
                             const fechaHoyClave = matchFecha[0];
-                            // Filtramos solo los de la misma fase y mismo día
-                            const partidosDelDia = LISTA_PARTIDOS.filter(p => p.fase === "Dieciseisavos" && p.desc.includes(fechaHoyClave));
-                            const indiceActual = partidosDelDia.findIndex(p => p.id === idPartidoActual);
+
+const faseActual = document.getElementById("selectFase").value;
+const partidosDelDia = LISTA_PARTIDOS.filter(p => p.fase === faseActual && p.desc.includes(fechaHoyClave));                            
+const indiceActual = partidosDelDia.findIndex(p => p.id === idPartidoActual);
 
                             // Si queda otro partido HOY en la lista, lo seleccionamos
                             if (indiceActual !== -1 && indiceActual + 1 < partidosDelDia.length) {
@@ -1078,7 +1079,6 @@
                         }
                     }
                 }
-                // ==========================================================================
                 
                 verificarBloqueoPartido();
             })
