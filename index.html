@@ -1592,21 +1592,21 @@ function calcularYMostrarTendencias(idPartido, conEspera = false) {
             /* 📱 AJUSTES EXCLUSIVOS PARA CELULARES */
             @media (max-width: 480px) {
                 .contenedor-columnas-tendencia {
-                    gap: 16px !important;       /* Reduce el espacio horizontal para que no se desborde */
-                    max-width: 285px !important; /* Cierra el bloque al ancho ideal del cuadro punteado */
+                    gap: 16px !important;       
+                    max-width: 285px !important; 
                 }
                 .columna-item-tendencia {
-                    min-width: 62px !important;  /* Ajusta el ancho de cada columna */
+                    min-width: 62px !important;  
                 }
                 .columna-item-tendencia .wrapper-barra {
-                    width: 85% !important;       /* Hace la barra un poquito más pequeña y estética en cel */
+                    width: 85% !important;       
                 }
             }
         </style>
 
         <div class="${claseTitulo}" style="text-align: center; width: 100%; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 15px; margin-top: 5px;">
             <span style="font-size: 0.75rem; font-weight: 800; color: #475569; letter-spacing: 0.6px; text-transform: uppercase;">
-                Tendencia del Equipo Alpromeh
+                📊 Tendencia del Equipo Alpromeh
             </span>
         </div>
         
@@ -1614,9 +1614,9 @@ function calcularYMostrarTendencias(idPartido, conEspera = false) {
             
             <div class="columna-item-tendencia ${claseLocal}" style="flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 70px;">
                 <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 2px;">Local</span>
-                <span id="numContadorLocal" style="font-size: 1.3rem; font-weight: 900; color: #16a34a; margin-bottom: 5px;">0%</span>
+                <span id="numContadorLocal" style="font-size: 1.3rem; font-weight: 900; color: #f97316; margin-bottom: 5px;">0%</span>
                 <div class="wrapper-barra" style="width: 100%; background-color: #cbd5e1; height: 4px; border-radius: 99px; overflow: hidden;">
-                    <div id="barraLocal" class="barra-progreso-dinamica" style="background-color: #16a34a; height: 100%;"></div>
+                    <div id="barraLocal" class="barra-progreso-dinamica" style="background-color: #f97316; height: 100%;"></div>
                 </div>
             </div>
 
@@ -1624,22 +1624,22 @@ function calcularYMostrarTendencias(idPartido, conEspera = false) {
                 <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 2px;">Empate</span>
                 <span id="numContadorEmpate" style="font-size: 1.3rem; font-weight: 900; color: #475569; margin-bottom: 5px;">0%</span>
                 <div class="wrapper-barra" style="width: 100%; background-color: #cbd5e1; height: 4px; border-radius: 99px; overflow: hidden;">
-                    <div id="barraEmpate" class="barra-progreso-dinamica" style="background-color: #94a3b8; height: 100%;"></div>
+                    <div id="barraEmpate" class="barra-progreso-dinamica" style="background-color: #475569; height: 100%;"></div>
                 </div>
             </div>
 
             <div class="columna-item-tendencia ${claseVisita}" style="flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 70px;">
                 <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 2px;">Visita</span>
-                <span id="numContadorVisita" style="font-size: 1.3rem; font-weight: 900; color: #0284c7; margin-bottom: 5px;">0%</span>
+                <span id="numContadorVisita" style="font-size: 1.3rem; font-weight: 900; color: #6366f1; margin-bottom: 5px;">0%</span>
                 <div class="wrapper-barra" style="width: 100%; background-color: #cbd5e1; height: 4px; border-radius: 99px; overflow: hidden;">
-                    <div id="barraVisita" class="barra-progreso-dinamica" style="background-color: #0284c7; height: 100%;"></div>
+                    <div id="barraVisita" class="barra-progreso-dinamica" style="background-color: #6366f1; height: 100%;"></div>
                 </div>
             </div>
 
         </div>
     `;
 
-    // 🚀 NUEVA ANIMACIÓN SIMULTÁNEA UNIFICADA
+    // 🚀 ANIMACIÓN SIMULTÁNEA UNIFICADA
     function dispararAnimacionSimultanea(idTxt, idBarra, valorMeta) {
         const elementoTxt = document.getElementById(idTxt);
         const elementoBarra = document.getElementById(idBarra);
