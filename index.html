@@ -468,6 +468,22 @@
             transform: none !important;
             cursor: not-allowed;
         }
+
+@keyframes fadeInUpPremium {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animacion-tendencia {
+    display: block !important;
+    animation: fadeInUpPremium 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
     </style>
 </head>
 <body>
@@ -531,33 +547,34 @@
                     </button>
                 </div>
                 
-                <div class="col-marcador">
-                    <span id="txtEstadoPartido" style="font-size: 0.75rem; font-weight: 800; color: #16a34a; letter-spacing: 0.8px; display: block; margin-bottom: 20px; text-transform: uppercase; text-align: center;">Pronóstico Oficial 📅</span>
-                    
-                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
-                        <div style="flex: 1; text-align: center;">
-                            <div id="flagLocal" style="font-size: 2.8rem; margin-bottom: 6px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">🏳️</div>
-                            <div id="lblLocal" style="font-size: 1rem; font-weight: 700; color: #1e293b; min-height: 44px; display: flex; align-items: center; justify-content: center; line-height: 1.2;">-</div>
-                            <input type="number" id="golesLocal" min="0" placeholder="0" class="input-goles">
-                        </div>
-                        
-                        <div style="font-weight: 900; color: #cbd5e1; font-size: 1.4rem; margin-top: 35px; font-style: italic; letter-spacing: -1px;">VS</div>
-                        
-                        <div style="flex: 1; text-align: center;">
-                            <div id="flagVisitante" style="font-size: 2.8rem; margin-bottom: 6px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">🏳️</div>
-                            <div id="lblVisitante" style="font-size: 1rem; font-weight: 700; color: #1e293b; min-height: 44px; display: flex; align-items: center; justify-content: center; line-height: 1.2;">-</div>
-                            <input type="number" id="golesVisitante" min="0" placeholder="0" class="input-goles">
-                        </div>
-                    </div>
+             <div class="col-marcador" style="position: relative;">
+    <span id="txtEstadoPartido" style="font-size: 0.75rem; font-weight: 800; color: #16a34a; letter-spacing: 0.8px; display: block; margin-bottom: 20px; text-transform: uppercase; text-align: center;">Pronóstico Oficial 📅</span>
+    
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+        <div style="flex: 1; text-align: center;">
+            <div id="flagLocal" style="font-size: 2.8rem; margin-bottom: 6px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">🏳️</div>
+            <div id="lblLocal" style="font-size: 1rem; font-weight: 700; color: #1e293b; min-height: 44px; display: flex; align-items: center; justify-content: center; line-height: 1.2;">-</div>
+            <input type="number" id="golesLocal" min="0" placeholder="0" class="input-goles">
+        </div>
+        
+        <div style="font-weight: 900; color: #cbd5e1; font-size: 1.4rem; margin-top: 35px; font-style: italic; letter-spacing: -1px;">VS</div>
+        
+        <div style="flex: 1; text-align: center;">
+            <div id="flagVisitante" style="font-size: 2.8rem; margin-bottom: 6px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));">🏳️</div>
+            <div id="lblVisitante" style="font-size: 1rem; font-weight: 700; color: #1e293b; min-height: 44px; display: flex; align-items: center; justify-content: center; line-height: 1.2;">-</div>
+            <input type="number" id="golesVisitante" min="0" placeholder="0" class="input-goles">
+        </div>
+    </div>
 
-                    <div id="bloqueoMensaje" class="capa-bloqueo">
-                        <span style="font-size: 1.8rem;">🔒</span>
-                        <span style="font-weight: 700; color: #475569; margin-top: 8px; font-size: 0.95rem;">Ya guardaste tu predicción</span>
-                        <span id="txtMarcadorGuardado" style="font-size: 1.8rem; font-weight: 900; color: #15803d; margin-top: 8px; background: #dcfce7; padding: 4px 20px; border-radius: 10px; border: 1px solid #bbf7d0; letter-spacing: 2px;">0 - 0</span>
-                    </div>
-                </div>
+   <div id="bloqueoMensaje" class="capa-bloqueo" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+    
+    <span style="font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); margin-bottom: 2px;">🔒</span>
 
-            </div>
+    <div id="txtMarcadorGuardado"></div>
+    
+    <div id="contenedorTendenciasComunidad" style="display: none; width: 100%; position: relative; z-index: 50; opacity: 1 !important; filter: none !important;"></div>
+</div>
+</div>
         </div>
     </div> 
 
@@ -799,37 +816,63 @@
                 if (inputGolesVisitante) inputGolesVisitante.disabled = true;
             }
 
-            // CASO 2: Si el partido ya caducó por tiempo de bloqueo
-            if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
-                if (prediccionExistente) {
-                    if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px;">${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}</span>`;
-                } else {
-                    if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; color: #94a3b8;">- - -</span>`;
-                    if (inputGolesLocal) inputGolesLocal.value = "";
-                    if (inputGolesVisitante) inputGolesVisitante.value = "";
-                    if (inputGolesLocal) inputGolesLocal.disabled = true;
-                    if (inputGolesVisitante) inputGolesVisitante.disabled = true;
-                }
+// CASO 2: Si el partido ya caducó por tiempo de bloqueo
+if (partido && partido.bloqueo && ahora >= partido.bloqueo) {
+    if (prediccionExistente) {
+        if (txtMarcador) {
+            // Pintamos ÚNICAMENTE el recuadro verde limpio del marcador
+            txtMarcador.innerHTML = `
+                <span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; color: #16a34a; background: #dcfce7; padding: 2px 18px; border-radius: 12px; border: 1px solid #bbf7d0; display: inline-block; margin-bottom: 12px;">
+                    ${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}
+                </span>
+            `;
+        }
+    } else {
+        if (txtMarcador) {
+            txtMarcador.innerHTML = `
+                <span style="font-size: 2.2rem; font-weight: 800; color: #94a3b8; display: inline-block; margin-bottom: 12px;">
+                    - - -
+                </span>
+            `;
+        }
+        if (inputGolesLocal) inputGolesLocal.value = "";
+        if (inputGolesVisitante) inputGolesVisitante.value = "";
+        if (inputGolesLocal) inputGolesLocal.disabled = true;
+        if (inputGolesVisitante) inputGolesVisitante.disabled = true;
+    }
 
-                if (capaBloqueo) capaBloqueo.style.display = "flex";
-                btnGuardar.disabled = true;
-                btnGuardar.style.background = "#ef4444"; 
-                btnGuardar.style.cursor = "not-allowed"; 
-                btnGuardar.innerText = "⏰ Tiempo Agotado ¡Ya empezó!";
-                return;
-            }
+    if (capaBloqueo) capaBloqueo.style.display = "flex";
+    btnGuardar.disabled = true;
+    btnGuardar.style.background = "#ef4444"; 
+    btnGuardar.style.cursor = "not-allowed"; 
+    btnGuardar.innerText = "⏰ Tiempo Agotado ¡Ya empezó!";
+    
+    calcularYMostrarTendencias(idSel);
+    return;
+}
 
-            // CASO 3: Si el usuario ya guardó previamente una predicción
-            if (prediccionExistente) {
-                if (txtMarcador) txtMarcador.innerHTML = `<span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px;">${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}</span>`;
-                if (capaBloqueo) capaBloqueo.style.display = "flex";
-                btnGuardar.disabled = true;
-                btnGuardar.innerText = "🔒 Bloqueado (Ya participaste)";
-                return;
-            }
+// CASO 3: Si el usuario ya guardó previamente una predicción
+if (prediccionExistente) {
+    if (txtMarcador) {
+        // Pintamos ÚNICAMENTE el recuadro verde limpio del marcador sin meter más candados
+        txtMarcador.innerHTML = `
+            <span style="font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; color: #16a34a; background: #dcfce7; padding: 2px 18px; border-radius: 12px; border: 1px solid #bbf7d0; display: inline-block; margin-bottom: 12px;">
+                ${prediccionExistente.golesLocal} - ${prediccionExistente.golesVisitante}
+            </span>
+        `;
+    }
+    if (capaBloqueo) capaBloqueo.style.display = "flex";
+    btnGuardar.disabled = true;
+    btnGuardar.innerText = "🔒 Bloqueado (Ya participaste)";
+    
+    calcularYMostrarTendencias(idSel);
+    return;
+}
 
-            // CASO 4: El partido está libre, evaluamos si ingresó los goles
-            if (capaBloqueo) capaBloqueo.style.display = "none";
+// CASO 4: El partido está libre (Ocultamos tendencias de la comunidad para evitar que se copien antes de votar)
+if (capaBloqueo) capaBloqueo.style.display = "none";
+const contenedorTendencias = document.getElementById('contenedorTendenciasComunidad');
+if (contenedorTendencias) contenedorTendencias.style.display = 'none';
             
             const gLocal = inputGolesLocal ? inputGolesLocal.value : "";
             const gVisitante = inputGolesVisitante ? inputGolesVisitante.value : "";
@@ -948,7 +991,7 @@
             }, 2300);
         }
 
-     // ==========================================================================
+  // ==========================================================================
         // ENVÍO DE DATOS NETO CORREGIDO Y LIMPIEZA ANTIFANTASMA (MODIFICADO)
         // ==========================================================================
         function enviarPronostico() {
@@ -1046,7 +1089,7 @@
                     `Registrado con éxito:<br><span style="font-weight: 700; color: #111827; display: inline-block; margin-top: 6px; background: rgba(0,0,0,0.04); padding: 2px 10px; border-radius: 6px;">${partido.loc} ${gLocal} - ${gVisitante} ${partido.vis}</span>`
                 );
                 
-                // 🔥 RE-RENDERIZADO AUTOMÁTICO INMEDIATO:
+                // ⚡ RE-RENDERIZADO AUTOMÁTICO INMEDIATO:
                 renderizarPartidosDisputados();
 
                 // ==========================================================================
@@ -1062,9 +1105,9 @@
                         if (matchFecha) {
                             const fechaHoyClave = matchFecha[0];
 
-const faseActual = document.getElementById("selectFase").value;
-const partidosDelDia = LISTA_PARTIDOS.filter(p => p.fase === faseActual && p.desc.includes(fechaHoyClave));                            
-const indiceActual = partidosDelDia.findIndex(p => p.id === idPartidoActual);
+                            const faseActual = document.getElementById("selectFase").value;
+                            const partidosDelDia = LISTA_PARTIDOS.filter(p => p.fase === faseActual && p.desc.includes(fechaHoyClave));                            
+                            const indiceActual = partidosDelDia.findIndex(p => p.id === idPartidoActual);
 
                             // Si queda otro partido HOY en la lista, lo seleccionamos
                             if (indiceActual !== -1 && indiceActual + 1 < partidosDelDia.length) {
@@ -1080,7 +1123,11 @@ const indiceActual = partidosDelDia.findIndex(p => p.id === idPartidoActual);
                     }
                 }
                 
+                // 1. Bloquea la interfaz de manera normal
                 verificarBloqueoPartido();
+
+                // 2. 🔥 ¡MÁGIA AQUÍ! Forzamos las tendencias del partido que se ACABA de guardar con la espera de 5 segundos
+                calcularYMostrarTendencias(idSel, true);
             })
             .catch(error => {
                 console.error("Error:", error);
@@ -1484,6 +1531,145 @@ function dispararPenalPro(event) {
         
         jugandoPateando = false;
     }, 2000);
+}
+
+// Añadimos el parámetro "conEspera" (por defecto false para que no espere a menos que se lo pidas)
+function calcularYMostrarTendencias(idPartido, conEspera = false) {
+    const contenedorTendencias = document.getElementById('contenedorTendenciasComunidad');
+    if (!contenedorTendencias) return;
+
+    // Calcular estadísticas de HISTORIAL_GENERAL_SHEETS
+    const votosPartido = HISTORIAL_GENERAL_SHEETS.filter(p => p.idPartido.toString() === idPartido.toString());
+    const totalVotos = votosPartido.length;
+
+    let local = 0, empate = 0, visita = 0;
+    if (totalVotos > 0) {
+        votosPartido.forEach(v => {
+            const gl = parseInt(v.golesLocal);
+            const gv = parseInt(v.golesVisitante);
+            if (gl > gv) local++;
+            else if (gl < gv) visita++;
+            else empate++;
+        });
+    }
+
+    const pctLocal = totalVotos > 0 ? Math.round((local / totalVotos) * 100) : 0;
+    const pctEmpate = totalVotos > 0 ? Math.round((empate / totalVotos) * 100) : 0;
+    const pctVisita = totalVotos > 0 ? Math.round((visita / totalVotos) * 100) : 0;
+
+    // Activamos el bloque contenedor
+    contenedorTendencias.style.display = 'block';
+
+    // Manejo de retraso inicial base (3 segundos si es guardado fresco, 0 si está navegando)
+    const baseDelay = conEspera ? 3000 : 0;
+
+    // Definición de clases para cascada
+    const claseTitulo = conEspera ? "animar-item retraso-titulo" : "animar-item";
+    const claseLocal  = conEspera ? "animar-item retraso-local"  : "animar-item";
+    const claseEmpate = conEspera ? "animar-item retraso-empate" : "animar-item";
+    const claseVisita = conEspera ? "animar-item retraso-visita" : "animar-item";
+
+    contenedorTendencias.innerHTML = `
+        <style>
+            @keyframes aparecerCascada {
+                from { opacity: 0; transform: translateY(-8px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animar-item {
+                opacity: 0;
+                animation: aparecerCascada 0.5s ease forwards;
+            }
+            .retraso-titulo  { animation-delay: 3.0s; }
+            .retraso-local   { animation-delay: 3.4s; }
+            .retraso-empate  { animation-delay: 3.8s; }
+            .retraso-visita  { animation-delay: 4.2s; }
+
+            .barra-progreso-dinamica {
+                width: 0%;
+                transition: none !important; 
+            }
+
+            /* 📱 AJUSTES EXCLUSIVOS PARA CELULARES */
+            @media (max-width: 480px) {
+                .contenedor-columnas-tendencia {
+                    gap: 16px !important;       /* Reduce el espacio horizontal para que no se desborde */
+                    max-width: 285px !important; /* Cierra el bloque al ancho ideal del cuadro punteado */
+                }
+                .columna-item-tendencia {
+                    min-width: 62px !important;  /* Ajusta el ancho de cada columna */
+                }
+                .columna-item-tendencia .wrapper-barra {
+                    width: 85% !important;       /* Hace la barra un poquito más pequeña y estética en cel */
+                }
+            }
+        </style>
+
+        <div class="${claseTitulo}" style="text-align: center; width: 100%; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 15px; margin-top: 5px;">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #475569; letter-spacing: 0.6px; text-transform: uppercase;">
+                Tendencia del Equipo Alpromeh
+            </span>
+        </div>
+        
+        <div class="contenedor-columnas-tendencia" style="display: flex; justify-content: center; align-items: center; text-align: center; gap: 35px; max-width: 340px; margin: 0 auto; width: 100%;">
+            
+            <div class="columna-item-tendencia ${claseLocal}" style="flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 70px;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 2px;">Local</span>
+                <span id="numContadorLocal" style="font-size: 1.3rem; font-weight: 900; color: #16a34a; margin-bottom: 5px;">0%</span>
+                <div class="wrapper-barra" style="width: 100%; background-color: #cbd5e1; height: 4px; border-radius: 99px; overflow: hidden;">
+                    <div id="barraLocal" class="barra-progreso-dinamica" style="background-color: #16a34a; height: 100%;"></div>
+                </div>
+            </div>
+
+            <div class="columna-item-tendencia ${claseEmpate}" style="flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 70px;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 2px;">Empate</span>
+                <span id="numContadorEmpate" style="font-size: 1.3rem; font-weight: 900; color: #475569; margin-bottom: 5px;">0%</span>
+                <div class="wrapper-barra" style="width: 100%; background-color: #cbd5e1; height: 4px; border-radius: 99px; overflow: hidden;">
+                    <div id="barraEmpate" class="barra-progreso-dinamica" style="background-color: #94a3b8; height: 100%;"></div>
+                </div>
+            </div>
+
+            <div class="columna-item-tendencia ${claseVisita}" style="flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 70px;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 2px;">Visita</span>
+                <span id="numContadorVisita" style="font-size: 1.3rem; font-weight: 900; color: #0284c7; margin-bottom: 5px;">0%</span>
+                <div class="wrapper-barra" style="width: 100%; background-color: #cbd5e1; height: 4px; border-radius: 99px; overflow: hidden;">
+                    <div id="barraVisita" class="barra-progreso-dinamica" style="background-color: #0284c7; height: 100%;"></div>
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    // 🚀 NUEVA ANIMACIÓN SIMULTÁNEA UNIFICADA
+    function dispararAnimacionSimultanea(idTxt, idBarra, valorMeta) {
+        const elementoTxt = document.getElementById(idTxt);
+        const elementoBarra = document.getElementById(idBarra);
+        if (!elementoTxt || !elementoBarra) return;
+
+        if (valorMeta === 0) {
+            elementoTxt.innerText = "0%";
+            elementoBarra.style.width = "0%";
+            return;
+        }
+
+        let contadorActual = 0;
+        const duracionTotal = 800; 
+        const intervaloTiempo = Math.floor(duracionTotal / valorMeta);
+
+        const idIntervalo = setInterval(() => {
+            contadorActual++;
+            elementoTxt.innerText = `${contadorActual}%`;
+            elementoBarra.style.width = `${contadorActual}%`;
+
+            if (contadorActual >= valorMeta) {
+                clearInterval(idIntervalo);
+            }
+        }, Math.max(intervaloTiempo, 12));
+    }
+
+    // Programar la animación respetando la cascada y el tiempo de espera configurado
+    setTimeout(() => dispararAnimacionSimultanea("numContadorLocal", "barraLocal", pctLocal), baseDelay + (conEspera ? 400 : 0));
+    setTimeout(() => dispararAnimacionSimultanea("numContadorEmpate", "barraEmpate", pctEmpate), baseDelay + (conEspera ? 800 : 0));
+    setTimeout(() => dispararAnimacionSimultanea("numContadorVisita", "barraVisita", pctVisita), baseDelay + (conEspera ? 1200 : 0));
 }
     </script>
 </body>
