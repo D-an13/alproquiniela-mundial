@@ -764,19 +764,26 @@
                     msgEspera = document.createElement('div');
                     msgEspera.id = 'msgFaseEspera';
                     
-                    // Estilos corregidos con flujo normal para no romper la tarjeta
-                    msgEspera.style.width = '100%';
-                    msgEspera.style.backgroundColor = '#f8fafc';
-                    msgEspera.style.border = '1px dashed #cbd5e1';
-                    msgEspera.style.borderRadius = '8px';
-                    msgEspera.style.padding = '8px 12px';
-                    msgEspera.style.textAlign = 'center';
-                    msgEspera.style.marginTop = '16px';
-                    msgEspera.style.clear = 'both';
-                    
-                    msgEspera.innerHTML = `
-                        <span style="font-size: 0.8rem; font-weight: 700; color: #475569; display: inline-flex; align-items: center; gap: 4px;">
-                            ⏳ Fase en espera. <span style="font-weight: 400; color: #94a3b8;">Falta definir los equipos clasificados.</span>
+                 // Forzamos un comportamiento de bloque independiente y centrado en la base
+msgEspera.style.position = 'absolute';
+msgEspera.style.bottom = '20px'; // Lo pega al borde inferior de la tarjeta blanca
+msgEspera.style.left = '50%';
+msgEspera.style.transform = 'translateX(-50%)'; // Centrado horizontal matemático perfecto
+msgEspera.style.width = '85%'; // Se estira a lo largo como un rectángulo elegante
+
+// Diseño del rectángulo estilizado
+msgEspera.style.backgroundColor = '#f8fafc';
+msgEspera.style.border = '1px dashed #cbd5e1';
+msgEspera.style.borderRadius = '10px';
+msgEspera.style.padding = '10px 16px';
+msgEspera.style.textAlign = 'center';
+msgEspera.style.boxSizing = 'border-box';
+
+// Contenido en una sola línea fluida y limpia
+msgEspera.innerHTML = `
+    <div style="font-size: 0.85rem; font-weight: 700; color: #475569; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+        <span>⏳</span> 
+        <span>Fase en espera. <span style="font-weight: 400; color: #64748b;">Falta definir los equipos clasificados.</span>
                         </span>
                     `;
                     
