@@ -527,14 +527,14 @@
         </div>
 
         <div style="margin-bottom: 16px;">
-            <label class="label-premium">2. Selecciona la Fase:</label>
-            <select id="selectFase" onchange="cargarPartidosPorFase()" class="select-premium">
-                <option value="Dieciseisavos">🔥 Dieciseisavos de Final</option>
-                <option value="Octavos">⚽ Octavos de Final</option>
-                <option value="Cuartos">🧱 Cuartos de Final</option>
-                <option value="Semis y Final" disabled>🏆 Semifinales y Gran Final (Próximamente)</option>
-            </select>
-        </div>
+    <label class="label-premium">2. Selecciona la Fase:</label>
+    <select id="selectFase" onchange="cargarPartidosPorFase()" class="select-premium">
+        <option value="Dieciseisavos">🔥 Dieciseisavos de Final</option>
+        <option value="Octavos">⚽ Octavos de Final</option>
+        <option value="Cuartos">🧱 Cuartos de Final</option>
+        <option value="Semis y Final">🏆 Semifinales y Gran Final</option>
+    </select>
+</div>
 
         <div style="margin-bottom: 20px;">
             <label class="label-premium">3. Elige el Partido:</label>
@@ -654,8 +654,9 @@
             { id: "P101", fase: "Cuartos", desc: "Sáb 11/07 - 3:00 PM - P101: Noruega v Inglaterra", loc: "Noruega", flLoc: "🇳🇴", vis: "Inglaterra", flVis: "🇬🇧", bloqueo: new Date("2026-07-11T15:00:00-06:00") },
             { id: "P102", fase: "Cuartos", desc: "Sáb 11/07 - 7:00 PM - P102: Argentina v Suiza", loc: "Argentina", flLoc: "🇦🇷", vis: "Suiza", flVis: "🇨🇭", bloqueo: new Date("2026-07-11T19:00:00-06:00") },
 
-            // --- SEMIFINALES Y GRAN FINAL ---
-            { id: "FUT_SEMIS", fase: "Semis y Final", desc: "Próximamente - Semifinales del Mundial", loc: "Por Definir", flLoc: "🏆", vis: "Por Definir", flVis: "🏆", bloqueo: new Date("2026-07-15T18:00:00-06:00") },
+          // --- SEMIFINALES Y GRAN FINAL ---
+            { id: "P103", fase: "Semis y Final", desc: "Mar 14/07 - 1:00 PM - Francia v España", loc: "Francia", flLoc: "🇫🇷", vis: "España", flVis: "🇪🇸", bloqueo: new Date("2026-07-14T13:00:00-06:00") },
+            { id: "P104", fase: "Semis y Final", desc: "Mié 15/07 - 1:00 PM - Inglaterra v Argentina", loc: "Inglaterra", flLoc: "🇬🇧", vis: "Argentina", flVis: "🇦🇷", bloqueo: new Date("2026-07-15T13:00:00-06:00") },
             { id: "FUT_FINAL", fase: "Semis y Final", desc: "Dom 19/07 - 3:00 PM - Gran Final Mundial 2026", loc: "Finalista A", flLoc: "🏆", vis: "Finalista B", flVis: "🏆", bloqueo: new Date("2026-07-19T15:00:00-06:00") }
         ];
 
@@ -664,62 +665,65 @@
         }
 
         function cargarPartidosPorFase() {
-    const faseSeleccionada = document.getElementById('selectFase').value;
-    const selectPartido = document.getElementById('selectPartido');
-    if (!selectPartido) return; 
-    
-    const partidosFiltrados = LISTA_PARTIDOS.filter(p => p.fase === faseSeleccionada);
-    
-    const coloresDias = {
-        "28/06": "#ffffff",
-        "29/06": "#e0f2fe",
-        "30/06": "#fef9c3",
-        "01/07": "#dcfce7",
-        "02/07": "#f3e8ff",
-        "03/07": "#ffe4e6",
-        "04/07": "#cef2da", 
-        "05/07": "#fef08a",
-        "06/07": "#bae6fd", 
-        "07/07": "#e2e8f0",
-        // 🧱 Colores nítidos para Cuartos de Final
-        "09/07": "#cef2da", // Jueves - Verde cancha
-        "10/07": "#bae6fd", // Viernes - Celeste claro
-        "11/07": "#fef08a"  // Sábado - Amarillo enérgico
-    };
-    
-    if (partidosFiltrados.length > 0) {
-        selectPartido.innerHTML = partidosFiltrados.map(p => {
-            let descLimpia = p.desc.replace(/🇬🇧/g, "⚽");
-            descLimpia = descLimpia.replace(/ - P\d+:/g, " -");
+            const faseSeleccionada = document.getElementById('selectFase').value;
+            const selectPartido = document.getElementById('selectPartido');
+            if (!selectPartido) return; 
             
-            const coincidenciaFecha = descLimpia.match(/\d{2}\/\d{2}/);
-            const fechaClave = coincidenciaFecha ? coincidenciaFecha[0] : "";
-            const colorFondo = coloresDias[fechaClave] || "#f1f5f9"; 
+            const partidosFiltrados = LISTA_PARTIDOS.filter(p => p.fase === faseSeleccionada);
             
-            return `<option value="${p.id}" style="background-color: ${colorFondo}; color: #1e293b; padding: 6px;">${descLimpia}</option>`;
-        }).join('');
+            const coloresDias = {
+                "28/06": "#ffffff",
+                "29/06": "#e0f2fe",
+                "30/06": "#fef9c3",
+                "01/07": "#dcfce7",
+                "02/07": "#f3e8ff",
+                "03/07": "#ffe4e6",
+                "04/07": "#cef2da", 
+                "05/07": "#fef08a",
+                "06/07": "#bae6fd", 
+                "07/07": "#e2e8f0",
+                "09/07": "#cef2da", 
+                "10/07": "#bae6fd", 
+                "11/07": "#fef08a",
+                // 🏆 Tonos nítidos para las Semifinales y la Gran Final
+                "14/07": "#f3e8ff", // Martes - Morado místico
+                "15/07": "#ffe4e6", // Miércoles - Rosa suave
+                "19/07": "#fef08a"  // Domingo - Amarillo oro final
+            };
+            
+            if (partidosFiltrados.length > 0) {
+                selectPartido.innerHTML = partidosFiltrados.map(p => {
+                    let descLimpia = p.desc.replace(/🇬🇧/g, "⚽");
+                    descLimpia = descLimpia.replace(/ - P\d+:/g, " -");
+                    
+                    const coincidenciaFecha = descLimpia.match(/\d{2}\/\d{2}/);
+                    const fechaClave = coincidenciaFecha ? coincidenciaFecha[0] : "";
+                    const colorFondo = coloresDias[fechaClave] || "#f1f5f9"; 
+                    
+                    return `<option value="${p.id}" style="background-color: ${colorFondo}; color: #1e293b; padding: 6px;">${descLimpia}</option>`;
+                }).join('');
 
-        // ==========================================================================
-        // 🤖 AUTO-ENFOQUE INTELIGENTE RECUPERADO
-        // ==========================================================================
-        const hoy = new Date();
-        const dia = String(hoy.getDate()).padStart(2, '0');
-        const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-        const fechaHoyClave = `${dia}/${mes}`;
+                // ==========================================================================
+                // 🤖 AUTO-ENFOQUE INTELIGENTE RECUPERADO
+                // ==========================================================================
+                const hoy = new Date();
+                const dia = String(hoy.getDate()).padStart(2, '0');
+                const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+                const fechaHoyClave = `${dia}/${mes}`;
 
-        // Buscamos si hay algún partido para HOY en la fase seleccionada
-        const primerPartidoDeHoy = partidosFiltrados.find(p => p.desc.includes(fechaHoyClave));
+                // Buscamos si hay algún partido para HOY en la fase seleccionada
+                const primerPartidoDeHoy = partidosFiltrados.find(p => p.desc.includes(fechaHoyClave));
 
-        if (primerPartidoDeHoy) {
-            selectPartido.value = primerPartidoDeHoy.id;
-            console.log(`🤖 Auto-enfocado con éxito en el juego de hoy: ${primerPartidoDeHoy.id}`);
+                if (primerPartidoDeHoy) {
+                    selectPartido.value = primerPartidoDeHoy.id;
+                    console.log(`🤖 Auto-enfocado con éxito en el juego de hoy: ${primerPartidoDeHoy.id}`);
+                }
+            } else {
+                selectPartido.innerHTML = `<option value="">No hay partidos para esta fase</option>`;
+            }
+            
+            cambiarPartidoSeleccionado();
         }
-    } else {
-        selectPartido.innerHTML = `<option value="">No hay partidos para esta fase</option>`;
-    }
-    
-    cambiarPartidoSeleccionado();
-}
 
        function cambiarPartidoSeleccionado() {
             const selectPartido = document.getElementById('selectPartido');
@@ -749,7 +753,7 @@
             if (lblVisitante) lblVisitante.innerText = partido.vis;
             if (flagVisitante) flagVisitante.innerText = obtenerBanderaReal(partido.flVis, partido.vis); 
 
-            // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
+           // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
             let msgEspera = document.getElementById('msgFaseEspera');
 
             if (idSel.startsWith("FUT_")) {
@@ -759,13 +763,27 @@
                 if (!msgEspera) {
                     msgEspera = document.createElement('div');
                     msgEspera.id = 'msgFaseEspera';
-                    msgEspera.className = "text-center py-3 px-4 bg-gray-50 rounded-lg border border-dashed border-gray-300 my-2";
+                    
+                    // Estilos corregidos con flujo normal para no romper la tarjeta
+                    msgEspera.style.width = '100%';
+                    msgEspera.style.backgroundColor = '#f8fafc';
+                    msgEspera.style.border = '1px dashed #cbd5e1';
+                    msgEspera.style.borderRadius = '8px';
+                    msgEspera.style.padding = '8px 12px';
+                    msgEspera.style.textAlign = 'center';
+                    msgEspera.style.marginTop = '16px';
+                    msgEspera.style.clear = 'both';
+                    
                     msgEspera.innerHTML = `
-                        <span class="text-sm font-semibold text-slate-500 block">⏳ Fase en espera</span>
-                        <span class="text-xs text-slate-400 block mt-0.5">Falta por definir a los equipos clasificados</span>
+                        <span style="font-size: 0.8rem; font-weight: 700; color: #475569; display: inline-flex; align-items: center; gap: 4px;">
+                            ⏳ Fase en espera. <span style="font-weight: 400; color: #94a3b8;">Falta definir los equipos clasificados.</span>
+                        </span>
                     `;
+                    
+                    // Buscamos el contenedor blanco del "PRONÓSTICO OFICIAL" (el recuadro con borde derecho)
                     const contenedorPronostico = lblLocal.closest('.flex') || lblLocal.parentElement;
                     if (contenedorPronostico) {
+                        // Lo agregamos al final del bloque interno para que aparezca centrado abajo de los trofeos
                         contenedorPronostico.appendChild(msgEspera);
                     }
                 } else {
@@ -797,14 +815,16 @@ function enrutarUsuarioFaseActual() {
             const mes = String(hoy.getMonth() + 1).padStart(2, '0');
             const fechaHoyClave = `${dia}/${mes}`; 
 
-const partidoDeHoy = LISTA_PARTIDOS.find(p => p.desc.includes(fechaHoyClave) && p.fase === "Cuartos");
-    const selectFase = document.getElementById('selectFase');
-            
+            // 🏆 CAMBIO AQUÍ: Ahora busca partidos de hoy que pertenezcan a "Semis y Final"
+            const partidoDeHoy = LISTA_PARTIDOS.find(p => p.desc.includes(fechaHoyClave) && p.fase === "Semis y Final");
+            const selectFase = document.getElementById('selectFase');
+                        
             if (partidoDeHoy && selectFase) {
                 selectFase.value = partidoDeHoy.fase;
                 console.log(`🤖 Fase auto-detectada por fecha de hoy: ${partidoDeHoy.fase}`);
             } else if (selectFase) {
-                selectFase.value = "Cuartos";
+                // 🚀 FALLBACK AQUÍ: Si no hay partidos hoy, por defecto te manda directo a Semis y Final
+                selectFase.value = "Semis y Final";
             }
 
             cargarPartidosPorFase();
@@ -1298,7 +1318,7 @@ if (contenedorTendencias) contenedorTendencias.style.display = 'none';
         })
         .catch(error => {
             console.error("Error al actualizar la tabla de posiciones:", error);
-            loader.innerHTML = "❌ Error al conectar con el servidor de posiciones.";
+            loader.innerHTML = "❌ Error al conectar con el servidor de posiciones.";const selectFase = document.getElementById('selectFase');
         });
 }
 
@@ -1647,7 +1667,7 @@ function calcularYMostrarTendencias(idPartido, conEspera = false) {
 
         <div class="${claseTitulo}" style="text-align: center; width: 100%; display: flex; justify-content: center; align-items: center; gap: 4px; margin-bottom: 15px; margin-top: 5px;">
             <span style="font-size: 0.75rem; font-weight: 800; color: #475569; letter-spacing: 0.6px; text-transform: uppercase;">
-                Tendencia del Equipo Alpromeh
+                📊 Tendencia del Equipo Alpromeh
             </span>
         </div>
         
