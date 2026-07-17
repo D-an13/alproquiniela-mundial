@@ -656,8 +656,9 @@
 
           // --- SEMIFINALES Y GRAN FINAL ---
             { id: "P103", fase: "Semis y Final", desc: "Mar 14/07 - 1:00 PM - Francia v España", loc: "Francia", flLoc: "🇫🇷", vis: "España", flVis: "🇪🇸", bloqueo: new Date("2026-07-14T13:00:00-06:00") },
-            { id: "P104", fase: "Semis y Final", desc: "Mié 15/07 - 1:00 PM - Inglaterra v Argentina", loc: "Inglaterra", flLoc: "🇬🇧", vis: "Argentina", flVis: "🇦🇷", bloqueo: new Date("2026-07-15T13:00:00-06:00") },
-            { id: "FUT_FINAL", fase: "Semis y Final", desc: "Dom 19/07 - 3:00 PM - Gran Final Mundial 2026", loc: "Finalista A", flLoc: "🏆", vis: "Finalista B", flVis: "🏆", bloqueo: new Date("2026-07-19T15:00:00-06:00") }
+            { id: "P104", fase: "Semis y Final", desc: "Mié 15/07 - 1:00 PM - Inglaterra v Argentina", loc: "Inglaterra", flLoc: "⚽", vis: "Argentina", flVis: "🇦🇷", bloqueo: new Date("2026-07-15T13:00:00-06:00") },
+            { id: "P105", fase: "Semis y Final", desc: "Sáb 18/07 - 3:00 PM - Francia v Inglaterra", loc: "Francia", flLoc: "🇫🇷", vis: "Inglaterra", flVis: "⚽", bloqueo: new Date("2026-07-18T15:00:00-06:00") },
+            { id: "P106", fase: "Semis y Final", desc: "Dom 19/07 - 1:00 PM - España v Argentina", loc: "España", flLoc: "🇪🇸", vis: "Argentina", flVis: "🇦🇷", bloqueo: new Date("2026-07-19T13:00:00-06:00") }
         ];
 
         function obtenerBanderaReal(emojiOriginal, nombreEquipo) {
@@ -685,10 +686,11 @@
                 "09/07": "#cef2da", 
                 "10/07": "#bae6fd", 
                 "11/07": "#fef08a",
-                // 🏆 Tonos nítidos para las Semifinales y la Gran Final
+                // 🏆 Tonos nítidos para las Semis, Tercer Lugar y Gran Final
                 "14/07": "#f3e8ff", // Martes - Morado místico
                 "15/07": "#ffe4e6", // Miércoles - Rosa suave
-                "19/07": "#fef08a"  // Domingo - Amarillo oro final
+                "18/07": "#e0f2fe", // Sábado - Celeste fresco (Tercer Lugar)
+                "19/07": "#fef08a"  // Domingo - Amarillo oro (¡Gran Final!)
             };
             
             if (partidosFiltrados.length > 0) {
@@ -725,7 +727,7 @@
             cambiarPartidoSeleccionado();
         }
 
-       function cambiarPartidoSeleccionado() {
+        function cambiarPartidoSeleccionado() {
             const selectPartido = document.getElementById('selectPartido');
             if (!selectPartido) return;
 
@@ -743,8 +745,7 @@
             const inputGolesLocal = document.getElementById('golesLocal');
             const inputGolesVisita = document.getElementById('golesVisitante');
 
-            // 🧼 ¡EL FIX AQUÍ! Cada vez que cambie de partido, limpiamos los inputs 
-            // para que no se queden arrastrando los goles del partido anterior.
+            // Limpiar inputs al cambiar de partido
             if (inputGolesLocal) inputGolesLocal.value = "";
             if (inputGolesVisita) inputGolesVisita.value = "";
 
@@ -753,54 +754,213 @@
             if (lblVisitante) lblVisitante.innerText = partido.vis;
             if (flagVisitante) flagVisitante.innerText = obtenerBanderaReal(partido.flVis, partido.vis); 
 
-           // --- MAGIA PARA BLOQUEAR FASES FUTURAS ---
-            let msgEspera = document.getElementById('msgFaseEspera');
+            // --- TRANSFORMACIÓN VISUAL DE LA TARJETA DE MARCADOR ---
+            const contenedorMarcador = document.querySelector('.col-marcador');
+            const txtEstado = document.getElementById('txtEstadoPartido');
 
-            if (idSel.startsWith("FUT_")) {
-                if (inputGolesLocal) inputGolesLocal.style.display = 'none';
-                if (inputGolesVisita) inputGolesVisita.style.display = 'none';
+            // 🧼 Limpieza completa de elementos dinámicos previos
+            if (contenedorMarcador) {
+                const elementosPrevios = contenedorMarcador.querySelectorAll('.efecto-premium');
+                elementosPrevios.forEach(el => el.remove());
+                contenedorMarcador.style.position = 'relative';
+                contenedorMarcador.style.overflow = 'hidden';
                 
-                if (!msgEspera) {
-                    msgEspera = document.createElement('div');
-                    msgEspera.id = 'msgFaseEspera';
-                    
-                 // Forzamos un comportamiento de bloque independiente y centrado en la base
-msgEspera.style.position = 'absolute';
-msgEspera.style.bottom = '20px'; // Lo pega al borde inferior de la tarjeta blanca
-msgEspera.style.left = '50%';
-msgEspera.style.transform = 'translateX(-50%)'; // Centrado horizontal matemático perfecto
-msgEspera.style.width = '85%'; // Se estira a lo largo como un rectángulo elegante
-
-// Diseño del rectángulo estilizado
-msgEspera.style.backgroundColor = '#f8fafc';
-msgEspera.style.border = '1px dashed #cbd5e1';
-msgEspera.style.borderRadius = '10px';
-msgEspera.style.padding = '10px 16px';
-msgEspera.style.textAlign = 'center';
-msgEspera.style.boxSizing = 'border-box';
-
-// Contenido en una sola línea fluida y limpia
-msgEspera.innerHTML = `
-    <div style="font-size: 0.85rem; font-weight: 700; color: #475569; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%;">
-        <span>⏳</span> 
-        <span>Fase en espera. <span style="font-weight: 400; color: #64748b;">Falta definir los equipos clasificados.</span>
-                        </span>
-                    `;
-                    
-                    // Buscamos el contenedor blanco del "PRONÓSTICO OFICIAL" (el recuadro con borde derecho)
-                    const contenedorPronostico = lblLocal.closest('.flex') || lblLocal.parentElement;
-                    if (contenedorPronostico) {
-                        // Lo agregamos al final del bloque interno para que aparezca centrado abajo de los trofeos
-                        contenedorPronostico.appendChild(msgEspera);
-                    }
-                } else {
-                    msgEspera.style.display = 'block';
-                }
-            } else {
-                if (inputGolesLocal) inputGolesLocal.style.display = '';
-                if (inputGolesVisita) inputGolesVisita.style.display = '';
-                if (msgEspera) msgEspera.style.display = 'none';
+                // Reset de estilos por defecto
+                if (lblLocal) lblLocal.style.color = '#1e293b';
+                if (lblVisitante) lblVisitante.style.color = '#1e293b';
+                if (flagLocal) { flagLocal.style.color = ''; flagLocal.style.textShadow = 'none'; }
+                if (flagVisitante) { flagVisitante.style.color = ''; flagVisitante.style.textShadow = 'none'; }
             }
+
+            // Inyectar estilos CSS de diamantinas, destellos y el barrido láser cruzado
+            if (!document.getElementById('estilosDisenoPremium')) {
+                const estilos = document.createElement('style');
+                estilos.id = 'estilosDisenoPremium';
+                estilos.innerHTML = `
+                    /* ✨ Destello Geométrico Fino de 4 Puntas */
+                    .destello-vectorial {
+                        position: absolute;
+                        width: 5px;
+                        height: 5px;
+                        background: #ffffff;
+                        border-radius: 50%;
+                        pointer-events: none;
+                        opacity: 0;
+                        z-index: 3;
+                    }
+                    .destello-vectorial::before, .destello-vectorial::after {
+                        content: '';
+                        position: absolute;
+                        background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+                    .destello-vectorial::before { width: 22px; height: 1.5px; }
+                    .destello-vectorial::after { width: 1.5px; height: 22px; }
+
+                    /* 💎 Micro-Diamantinas sutiles (Glitter Dust de Fondo) */
+                    .diamantina-micro {
+                        position: absolute;
+                        border-radius: 50%;
+                        pointer-events: none;
+                        opacity: 0;
+                        z-index: 2;
+                    }
+
+                    /* ⚡ EL TOQUE PREMIUM: Reflejo de Luz Cruzado (Barrido Satinado) */
+                    .barrido-metalico {
+                        position: absolute;
+                        top: 0;
+                        left: -150%;
+                        width: 60%;
+                        height: 100%;
+                        background: linear-gradient(
+                            to right, 
+                            rgba(255, 255, 255, 0) 0%, 
+                            rgba(255, 255, 255, 0.35) 50%, 
+                            rgba(255, 255, 255, 0) 100%
+                        );
+                        transform: skewX(-30deg);
+                        pointer-events: none;
+                        animation: barridoLuz 5s ease-in-out infinite;
+                        z-index: 4;
+                    }
+
+                    /* 🎬 Animaciones */
+                    @keyframes parpadeoVectorial {
+                        0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+                        50% { opacity: 0.85; transform: scale(1.1) rotate(90deg); }
+                    }
+                    @keyframes parpadeoDiamantina {
+                        0%, 100% { opacity: 0.1; transform: scale(0.7); }
+                        50% { opacity: 0.7; transform: scale(1.1); }
+                    }
+                    @keyframes barridoLuz {
+                        0% { left: -150%; }
+                        25%, 100% { left: 150%; }
+                    }
+                `;
+                document.head.appendChild(estilos);
+            }
+
+            if (contenedorMarcador && txtEstado) {
+                // Reset a Tarjeta Estándar
+                contenedorMarcador.style.background = '#ffffff';
+                contenedorMarcador.style.border = '1px solid #e2e8f0';
+                contenedorMarcador.style.boxShadow = 'inset 0 2px 4px rgba(0,0,0,0.02)';
+                txtEstado.innerHTML = 'PRONÓSTICO OFICIAL';
+                txtEstado.style.color = '#047857';
+                txtEstado.style.letterSpacing = '1px';
+                txtEstado.style.fontSize = ''; 
+                txtEstado.style.fontWeight = '700';
+                txtEstado.style.textShadow = 'none';
+
+                if (idSel === "P105") {
+                    // 🥈 TARJETA TERCER LUGAR: Color plano Oscuro Titanium
+                    contenedorMarcador.style.background = '#1e293b';
+                    contenedorMarcador.style.border = '1px solid #475569';
+                    contenedorMarcador.style.boxShadow = '0 10px 25px rgba(0,0,0,0.35)';
+                    
+                    // 💥 CAMBIO COMPLETO: Título verdaderamente GIGANTE y en Negrita Extrema
+                    txtEstado.innerHTML = 'TERCER LUGAR';
+                    txtEstado.style.color = '#cbd5e1'; 
+                    txtEstado.style.fontSize = '2.4rem'; 
+                    txtEstado.style.fontWeight = '900'; 
+                    txtEstado.style.letterSpacing = '2px';
+                    txtEstado.style.textShadow = '0 2px 4px rgba(0,0,0,0.5)';
+
+                    if (flagLocal) { flagLocal.style.color = '#cbd5e1'; }
+                    if (flagVisitante) { flagVisitante.style.color = '#cbd5e1'; }
+                    if (lblLocal) lblLocal.style.color = '#f8fafc';
+                    if (lblVisitante) lblVisitante.style.color = '#f8fafc';
+
+                    const barrido = document.createElement('div');
+                    barrido.className = 'barrido-metalico efecto-premium';
+                    contenedorMarcador.appendChild(barrido);
+
+                    for (let i = 0; i < 35; i++) {
+                        const diam = document.createElement('div');
+                        diam.className = 'diamantina-micro efecto-premium';
+                        const size = Math.random() * 1.2 + 1;
+                        diam.style.width = `${size}px`;
+                        diam.style.height = `${size}px`;
+                        diam.style.top = `${Math.random() * 100}%`;
+                        diam.style.left = `${Math.random() * 100}%`;
+                        diam.style.background = '#ffffff';
+                        diam.style.boxShadow = '0 0 2px rgba(255, 255, 255, 0.5)';
+                        diam.style.animation = `parpadeoDiamantina ${1.5 + Math.random() * 2}s ease-in-out infinite`;
+                        contenedorMarcador.appendChild(diam);
+                    }
+
+                    const coordenadas = [{ top: '15%', left: '12%' }, { top: '25%', right: '12%' }, { bottom: '20%', left: '15%' }, { bottom: '15%', right: '10%' }];
+                    coordenadas.forEach((coord, i) => {
+                        const destello = document.createElement('div');
+                        destello.className = 'destello-vectorial efecto-premium';
+                        destello.style.top = coord.top;
+                        if (coord.left) destello.style.left = coord.left;
+                        if (coord.right) destello.style.right = coord.right;
+                        destello.style.background = '#ffffff';
+                        destello.style.animation = `parpadeoVectorial ${2.5 + (i * 0.5)}s ease-in-out infinite`;
+                        contenedorMarcador.appendChild(destello);
+                    });
+                } 
+                else if (idSel === "P106") {
+                    // 🏆 LA GRAN FINAL: Oro Oscuro Premium #5c4605
+                    contenedorMarcador.style.background = '#5c4605'; 
+                    contenedorMarcador.style.border = '1px solid #453403';
+                    contenedorMarcador.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.4)';
+                    
+                    // 💥 CAMBIO COMPLETO: Título verdaderamente GIGANTE y en Negrita Extrema
+                    txtEstado.innerHTML = 'LA GRAN FINAL';
+                    txtEstado.style.color = '#fef3c7'; 
+                    txtEstado.style.fontSize = '2.5rem'; 
+                    txtEstado.style.fontWeight = '900'; 
+                    txtEstado.style.letterSpacing = '2px';
+                    txtEstado.style.textShadow = '0 2px 5px rgba(0,0,0,0.7)';
+
+                    // ✨ IGUALDAD DE COLOR PERFECTA: Países y siglas con el mismo tono crema/oro de LA GRAN FINAL
+                    if (flagLocal) { flagLocal.style.color = '#fef3c7'; } 
+                    if (flagVisitante) { flagVisitante.style.color = '#fef3c7'; } 
+                    if (lblLocal) lblLocal.style.color = '#fef3c7'; 
+                    if (lblVisitante) lblVisitante.style.color = '#fef3c7'; 
+
+                    const barrido = document.createElement('div');
+                    barrido.className = 'barrido-metalico efecto-premium';
+                    contenedorMarcador.appendChild(barrido);
+
+                    for (let i = 0; i < 35; i++) {
+                        const diam = document.createElement('div');
+                        diam.className = 'diamantina-micro efecto-premium';
+                        const size = Math.random() * 1.2 + 1;
+                        diam.style.width = `${size}px`;
+                        diam.style.height = `${size}px`;
+                        diam.style.top = `${Math.random() * 100}%`;
+                        diam.style.left = `${Math.random() * 100}%`;
+                        diam.style.background = '#ffffff';
+                        diam.style.boxShadow = '0 0 3px rgba(255, 255, 255, 0.7)';
+                        diam.style.animation = `parpadeoDiamantina ${1.5 + Math.random() * 2}s ease-in-out infinite`;
+                        contenedorMarcador.appendChild(diam);
+                    }
+
+                    const coordenadas = [{ top: '12%', left: '8%' }, { top: '18%', right: '10%' }, { bottom: '15%', left: '12%' }, { bottom: '18%', right: '12%' }];
+                    coordenadas.forEach((coord, i) => {
+                        const destello = document.createElement('div');
+                        destello.className = 'destello-vectorial efecto-premium';
+                        destello.style.top = coord.top;
+                        if (coord.left) destello.style.left = coord.left;
+                        if (coord.right) destello.style.right = coord.right;
+                        destello.style.background = '#ffffff';
+                        destello.style.animation = `parpadeoVectorial ${2 + (i * 0.5)}s ease-in-out infinite`;
+                        contenedorMarcador.appendChild(destello);
+                    });
+                }
+            }
+
+            if (inputGolesLocal) inputGolesLocal.style.display = '';
+            if (inputGolesVisita) inputGolesVisita.style.display = '';
+            const msgEspera = document.getElementById('msgFaseEspera');
+            if (msgEspera) msgEspera.style.display = 'none';
 
             verificarBloqueoPartido();
         }
