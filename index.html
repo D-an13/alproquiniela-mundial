@@ -1900,5 +1900,162 @@ function calcularYMostrarTendencias(idPartido, conEspera = false) {
     setTimeout(() => dispararAnimacionSimultanea("numContadorVisita", "barraVisita", pctVisita), baseDelay + (conEspera ? 1200 : 0));
 }
     </script>
+
+<!-- =========================================================================
+     🏆 PAQUETE TODO-EN-UNO V3: PODIO ADAPTABLE, NOMBRES UNIFICADOS Y CONFETI LLUVIA
+     ========================================================================= -->
+
+<div id="modalPodioQuiniela" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 15, 30, 0.93); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 999999; display: flex; justify-content: center; align-items: center; font-family: system-ui, -apple-system, sans-serif; overflow: hidden;">
+    
+    <!-- 🎉 CONTENEDOR DE CONFETI EN CASCADA REAL (CSS PURO) -->
+    <div style="position: absolute; width: 100%; height: 100%; pointer-events: none; top: 0; left: 0; overflow: hidden;">
+        <style>
+            @keyframes lluviaConfeti {
+                0% { transform: translateY(-50px) translateX(0) rotate(0deg); opacity: 1; }
+                50% { transform: translateY(50vh) translateX(30px) rotate(180deg); opacity: 0.9; }
+                100% { transform: translateY(105vh) translateX(-20px) rotate(360deg); opacity: 0; }
+            }
+            .pedazo-confeti {
+                position: absolute; width: 10px; height: 10px; top: -20px;
+                animation: lluviaConfeti 4s linear infinite;
+            }
+        </style>
+        <!-- Tiras de confeti de colores con diferentes retrasos y posiciones -->
+        <div class="pedazo-confeti" style="left: 10%; background: #ff2a5f; animation-delay: 0s; animation-duration: 3.5s;"></div>
+        <div class="pedazo-confeti" style="left: 25%; background: #fbbf24; width: 8px; height: 12px; animation-delay: 1.5s; animation-duration: 4.2s;"></div>
+        <div class="pedazo-confeti" style="left: 40%; background: #2af598; animation-delay: 0.5s; animation-duration: 3.8s;"></div>
+        <div class="pedazo-confeti" style="left: 55%; background: #009efd; width: 12px; height: 8px; animation-delay: 2.2s; animation-duration: 4.5s;"></div>
+        <div class="pedazo-confeti" style="left: 70%; background: #9b51e0; animation-delay: 1s; animation-duration: 3.9s;"></div>
+        <div class="pedazo-confeti" style="left: 85%; background: #ff7e40; animation-delay: 2.8s; animation-duration: 4.1s;"></div>
+        <div class="pedazo-confeti" style="left: 95%; background: #fbbf24; animation-delay: 0.8s; animation-duration: 3.6s;"></div>
+    </div>
+
+    <style>
+        /* 🕹️ Animación Kahoot: Nombres bailando flojitos */
+        @keyframes bailarGanador {
+            0% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-5px) rotate(-1.5deg); }
+            50% { transform: translateY(1.5px) rotate(2deg); }
+            75% { transform: translateY(-3px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* 🚀 EFECTOS DE ENTRADA CON REBOTE TIPO VIDEOJUEGO */
+        @keyframes caerPodio3 {
+            0% { transform: translateY(300px) scale(0.6); opacity: 0; }
+            70% { transform: translateY(-10px) scale(1.05); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes caerPodio2 {
+            0% { transform: translateY(340px) scale(0.6); opacity: 0; }
+            70% { transform: translateY(-15px) scale(1.05); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes caerPodio1 {
+            0% { transform: translateY(400px) scale(0.5); opacity: 0; filter: brightness(2); }
+            70% { transform: translateY(-25px) scale(1.08); opacity: 1; filter: brightness(1); }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes fundirTexto {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulsoMedallaOro {
+            0% { filter: drop-shadow(0 0 6px rgba(251,191,36,0.4)); }
+            50% { filter: drop-shadow(0 0 18px rgba(251,191,36,0.8)); }
+            100% { filter: drop-shadow(0 0 6px rgba(251,191,36,0.4)); }
+        }
+
+        /* 👑 FUENTE UNIFICADA Y GRANDE PARA TODOS LOS NOMBRES */
+        .nombre-podio-universal {
+            font-size: 19px; /* Tamaño idéntico e impactante para todos */
+            font-weight: 900;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.6);
+            display: block;
+            margin-top: 4px;
+        }
+
+        .nombre-claudia { animation: bailarGanador 2.8s ease-in-out infinite; display: inline-block; }
+        .nombre-mario { animation: bailarGanador 2.4s ease-in-out infinite 0.3s; display: inline-block; }
+        .nombre-yanet { animation: bailarGanador 3.2s ease-in-out infinite 0.1s; display: inline-block; }
+
+        .podio-bloque-3 { animation: caerPodio3 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards; opacity: 0; }
+        .podio-bloque-2 { animation: caerPodio2 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards 0.2s; opacity: 0; }
+        .podio-bloque-1 { animation: caerPodio1 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards 0.4s; opacity: 0; }
+    </style>
+
+    <div style="width: 540px; max-width: 92%; text-align: center; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 10;">
+        
+        <!-- 🎉 Encabezado del Evento -->
+        <div style="margin-bottom: 25px; animation: fundirTexto 0.6s ease-out forwards;">
+            <span style="font-size: 55px; display: block; margin-bottom: 5px;">👑</span>
+            <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 950; letter-spacing: -0.8px; text-shadow: 0 4px 15px rgba(0,0,0,0.6);">¡Gran Final de la Quiniela!</h1>
+            <p style="color: #94a3b8; margin: 6px 0 0 0; font-size: 14.5px; font-weight: 500;">Oficialmente tenemos a nuestros tres campeones</p>
+        </div>
+
+        <!-- 📊 ESTRUCTURA DEL PODIO (RESPONSIVE PC/MÓVIL) -->
+        <div style="display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 270px; margin-bottom: 35px; padding-bottom: 5px;">
+            
+            <!-- 🥈 SEGUNDO LUGAR (MARIO) -->
+            <div class="podio-bloque-2" style="display: flex; flex-direction: column; align-items: center; width: 31%;">
+                <div class="nombre-mario" style="margin-bottom: 12px; text-align: center; width: 100%;">
+                    <span style="font-size: 26px; display: block;">🥈</span>
+                    <strong class="nombre-podio-universal" style="color: #cbd5e1;">Mario</strong>
+                </div>
+                <div style="background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%); width: 100%; height: 110px; border-radius: 12px 12px 0 0; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border-top: 4px solid #cbd5e1;">
+                    <span style="font-size: 45px; font-weight: 900; color: rgba(255,255,255,0.25); font-family: monospace;">2</span>
+                </div>
+            </div>
+
+            <!-- 🥇 PRIMER LUGAR (CLAUDIA) -->
+            <div class="podio-bloque-1" style="display: flex; flex-direction: column; align-items: center; width: 36%; z-index: 10; margin: 0 6px;">
+                <div class="nombre-claudia" style="margin-bottom: 10px; text-align: center; width: 100%;">
+                    <span style="font-size: 48px; display: block; animation: pulsoMedallaOro 2s infinite ease-in-out;">🥇</span>
+                    <strong class="nombre-podio-universal" style="color: #fbbf24;">Claudia</strong>
+                </div>
+                <div style="background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%); width: 100%; height: 165px; border-radius: 16px 16px 0 0; display: flex; justify-content: center; align-items: center; box-shadow: 0 15px 35px rgba(245,158,11,0.3), 0 10px 25px rgba(0,0,0,0.5); border-top: 4px solid #fef08a;">
+                    <span style="font-size: 65px; font-weight: 900; color: rgba(255,255,255,0.3); font-family: monospace;">1</span>
+                </div>
+            </div>
+
+            <!-- 🥉 TERCER LUGAR (YANET) -->
+            <div class="podio-bloque-3" style="display: flex; flex-direction: column; align-items: center; width: 31%;">
+                <div class="nombre-yanet" style="margin-bottom: 12px; text-align: center; width: 100%;">
+                    <span style="font-size: 24px; display: block;">🥉</span>
+                    <strong class="nombre-podio-universal" style="color: #d97706;">Yanet</strong>
+                </div>
+                <div style="background: linear-gradient(180deg, #b45309 0%, #78350f 100%); width: 100%; height: 80px; border-radius: 12px 12px 0 0; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); border-top: 4px solid #d97706;">
+                    <span style="font-size: 35px; font-weight: 900; color: rgba(255,255,255,0.2); font-family: monospace;">3</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 🚪 BOTÓN DE SALIDA -->
+        <button onclick="cerrarPodioQuiniela()" style="background: #ffffff; color: #0f172a; border: none; padding: 14px 36px; border-radius: 16px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.3); opacity: 0; animation: fundirTexto 0.5s ease-out forwards 1.2s; transition: all 0.2s;" onmouseenter="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 15px 30px rgba(255,255,255,0.15)';" onmouseleave="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.3)';">
+            Ver Resultados Completos 📊
+        </button>
+
+    </div>
+</div>
+
+<!-- ⚙️ 2. LÓGICA DE CONTROL -->
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('modalPodioQuiniela');
+        if (modal) modal.style.display = 'flex';
+    });
+
+    function cerrarPodioQuiniela() {
+        const modal = document.getElementById('modalPodioQuiniela');
+        if (modal) {
+            modal.style.transition = 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 350);
+        }
+    }
+</script>
 </body>
 </html>
